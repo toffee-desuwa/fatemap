@@ -239,7 +239,7 @@
       "name": "Vercel deployment",
       "description": "Deploy with demo mode",
       "priority": 26,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F025"]
     }
   ]

@@ -345,3 +345,13 @@
 - Architecture section shows 4-layer deck.gl composition and simulation flow
 - Build: clean, Lint: clean, Tests: 472 (472 passing)
 - Next action: F026 - Vercel deployment
+
+## Session 30 (F026 - Vercel deployment — 2026-03-21)
+- Created vercel.json: minimal config (framework nextjs, build/install commands)
+- Deployed via no-auth fallback (Vercel CLI not authenticated in unattended mode)
+- Preview URL: https://skill-deploy-15z0lwj1bt-agent-skill-vercel.vercel.app
+- Claim URL: https://vercel.com/claim-deployment?code=2189bcc0-a290-4da8-bef1-7ff49bb6215b
+- Verified /en route returns HTTP 200
+- next-intl middleware handles / → /en redirect natively, no vercel.json rewrites needed
+- Build: clean, Lint: clean, Tests: 472 (472 passing)
+- **ALL 30 FEATURES COMPLETE** — FateMap is fully built and deployed
