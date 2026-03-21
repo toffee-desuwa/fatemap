@@ -76,3 +76,10 @@
 - Created src/lib/__tests__/keyword-analyzer.test.ts: 12 tests (exact match, Chinese, partial, gibberish, empty, single word, case insensitive, best match, sorted results, limit, empty results)
 - Build: clean, Lint: clean, Tests: 55 (55 passing)
 - Next action: F007 - Zod schema & LLM validation
+
+## Session 8 (F007 - Zod schema & LLM validation — 2026-03-21)
+- Created src/lib/llm-schema.ts: parseSimulationResponse() with Zod safeParse
+- Strips markdown code fences (```json and bare ```), validates structure, filters unknown countryId/cityId, clamps impactPercent to [-50,50], coerces numeric strings, pre-filters activatedRelationships to strings
+- Created src/lib/__tests__/llm-schema.test.ts: 14 tests (valid JSON, markdown fences, bare fences, unknown countryId, unknown cityId, clamp >50, clamp <-50, missing fields, invalid JSON, empty string, unknown epicenter, invalid relationship entries, extra fields, numeric string coercion)
+- Build: clean, Lint: clean, Tests: 69 (69 passing)
+- Next action: F008 - LLM analyzer & providers

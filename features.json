@@ -63,7 +63,7 @@
       "name": "Zod schema & LLM validation",
       "description": "Zod validation for LLM-returned SimulationResult JSON",
       "priority": 7,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002"]
     },
     {
