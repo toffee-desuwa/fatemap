@@ -305,3 +305,13 @@
 - Created tests: opengraph-image (6 tests), layout-metadata (8 tests)
 - Build: clean, Lint: clean, Tests: 428 (428 passing, +14 new)
 - Next action: F023 - Event feed (Phase 2)
+
+## Session 26 (F023 - Event feed (Phase 2) — 2026-03-21)
+- Created src/components/feed/EventCard.tsx: clickable card with category emoji icon, locale-aware name/description, active highlight state
+- Created src/components/feed/EventFeed.tsx: scrollable left sidebar with 9 filter tabs (All + 8 categories), search input filtering by name/description/keywords, empty state
+- Updated src/components/layout/AppShell.tsx: grid changed from grid-cols-[1fr_360px] to grid-cols-[240px_1fr_360px], wired EventFeed with onSelectScenario→simulate
+- Updated src/hooks/useSimulation.ts: added activeScenarioId state — set on preset match, cleared on LLM result/clear
+- Added feed namespace to en.json/zh.json: 12 keys (title, search, noResults, 9 category labels)
+- Created tests: EventCard (12 tests), EventFeed (15 tests), updated AppShell (23 tests, +2 new), updated useSimulation (12 tests, +2 new)
+- Build: clean, Lint: clean, Tests: 460 (460 passing, +32 new)
+- Next action: F023a - Code quality audit #4
