@@ -84,9 +84,25 @@ describe('LandingClient', () => {
     expect(screen.getByTestId('mock-hero-map-loader')).toBeInTheDocument();
   });
 
-  it('has scroll indicator', () => {
-    // SVG arrow
-    const svg = screen.getByTestId('hero-section').querySelector('svg');
-    expect(svg).toBeInTheDocument();
+  it('has scroll indicator hidden on mobile', () => {
+    const hero = screen.getByTestId('hero-section');
+    const scrollContainer = hero.querySelector('.animate-bounce');
+    expect(scrollContainer).toBeInTheDocument();
+    expect(scrollContainer?.className).toContain('hidden');
+    expect(scrollContainer?.className).toContain('md:block');
+  });
+
+  // --- Responsive ---
+
+  it('hero section uses 60vh on mobile, full screen on md+', () => {
+    const hero = screen.getByTestId('hero-section');
+    expect(hero.className).toContain('h-[60vh]');
+    expect(hero.className).toContain('md:h-screen');
+  });
+
+  it('hero title uses smaller text on mobile', () => {
+    const title = screen.getByTestId('hero-title');
+    expect(title.className).toContain('text-4xl');
+    expect(title.className).toContain('lg:text-8xl');
   });
 });

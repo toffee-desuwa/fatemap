@@ -22,10 +22,10 @@ export function Header({ currentPage }: HeaderProps) {
   return (
     <header
       data-testid="header"
-      className="flex h-12 items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4"
+      className="flex h-12 items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-2 md:px-4"
     >
       {/* Left: Brand + Nav */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-3 md:gap-6">
         <Link
           href="/dashboard"
           className="text-sm font-bold tracking-wider text-[var(--color-primary)]"
@@ -33,7 +33,7 @@ export function Header({ currentPage }: HeaderProps) {
         >
           {t('appName')}
         </Link>
-        <nav className="flex items-center gap-4" data-testid="nav">
+        <nav className="flex items-center gap-2 md:gap-4" data-testid="nav">
           <Link
             href="/dashboard"
             data-testid="nav-dashboard"
@@ -60,7 +60,7 @@ export function Header({ currentPage }: HeaderProps) {
       </div>
 
       {/* Right: AI status + Locale + GitHub */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 md:gap-3">
         <span
           data-testid="ai-status"
           className="flex items-center gap-1.5 text-xs"
@@ -70,7 +70,7 @@ export function Header({ currentPage }: HeaderProps) {
               hasLlmKey ? 'bg-[#44ff88]' : 'bg-[var(--color-text-secondary)]'
             }`}
           />
-          <span className="text-[var(--color-text-secondary)]">
+          <span className="hidden sm:inline text-[var(--color-text-secondary)]">
             {hasLlmKey ? t('aiConnected') : t('aiPresetOnly')}
           </span>
         </span>
@@ -80,7 +80,7 @@ export function Header({ currentPage }: HeaderProps) {
           target="_blank"
           rel="noopener noreferrer"
           data-testid="github-link"
-          className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-foreground)] transition-colors"
+          className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-foreground)] transition-colors hidden sm:inline"
         >
           {t('github')}
         </a>

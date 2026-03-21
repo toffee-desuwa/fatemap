@@ -108,4 +108,28 @@ describe('Header', () => {
     expect(dashboard.className).toContain('text-[var(--color-text-secondary)]');
     expect(settings.className).toContain('text-[var(--color-text-secondary)]');
   });
+
+  // --- Responsive ---
+
+  it('hides AI status text on small screens', () => {
+    render(<Header />);
+    const aiStatus = screen.getByTestId('ai-status');
+    const textSpan = aiStatus.querySelector('span:last-child');
+    expect(textSpan?.className).toContain('hidden');
+    expect(textSpan?.className).toContain('sm:inline');
+  });
+
+  it('hides GitHub link on small screens', () => {
+    render(<Header />);
+    const github = screen.getByTestId('github-link');
+    expect(github.className).toContain('hidden');
+    expect(github.className).toContain('sm:inline');
+  });
+
+  it('uses responsive padding', () => {
+    render(<Header />);
+    const header = screen.getByTestId('header');
+    expect(header.className).toContain('px-2');
+    expect(header.className).toContain('md:px-4');
+  });
 });

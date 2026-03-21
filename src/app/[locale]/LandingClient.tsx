@@ -19,7 +19,7 @@ export function LandingClient() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
       {/* Hero Section */}
-      <section className="relative h-screen overflow-hidden" data-testid="hero-section">
+      <section className="relative h-[60vh] md:h-screen overflow-hidden" data-testid="hero-section">
         {/* Hero map background */}
         <div className="absolute inset-0 z-0">
           <FateHeroMapLoader />
@@ -31,26 +31,26 @@ export function LandingClient() {
         {/* Hero content */}
         <div className="relative z-20 flex h-full flex-col items-center justify-center px-4 text-center">
           <h1
-            className="mb-4 text-6xl font-bold tracking-tight sm:text-7xl md:text-8xl"
+            className="mb-4 text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
             data-testid="hero-title"
           >
             <span className="text-[#ff3344]">{tc('appName')}</span>
           </h1>
-          <p className="mb-8 max-w-xl text-lg text-gray-300 sm:text-xl" data-testid="hero-tagline">
+          <p className="mb-6 max-w-xl text-base text-gray-300 sm:text-lg md:mb-8 md:text-xl" data-testid="hero-tagline">
             {t('tagline')}
           </p>
           <Link
             href="/dashboard"
-            className="rounded-lg bg-[#ff3344] px-8 py-3 text-lg font-semibold text-white transition-colors hover:bg-[#e62e3c]"
+            className="rounded-lg bg-[#ff3344] px-6 py-2.5 text-base font-semibold text-white transition-colors hover:bg-[#e62e3c] md:px-8 md:py-3 md:text-lg"
             data-testid="hero-cta"
           >
             {t('cta')}
           </Link>
-          <p className="mt-4 text-sm text-gray-500">{t('ctaDescription')}</p>
+          <p className="mt-3 text-xs text-gray-500 md:mt-4 md:text-sm">{t('ctaDescription')}</p>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 animate-bounce">
+        {/* Scroll indicator — hidden on mobile */}
+        <div className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 animate-bounce hidden md:block">
           <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
@@ -58,8 +58,8 @@ export function LandingClient() {
       </section>
 
       {/* Features Section */}
-      <section className="mx-auto max-w-6xl px-4 py-24" data-testid="features-section">
-        <h2 className="mb-16 text-center text-3xl font-bold sm:text-4xl">{t('features')}</h2>
+      <section className="mx-auto max-w-6xl px-4 py-12 md:py-24" data-testid="features-section">
+        <h2 className="mb-8 text-center text-2xl font-bold sm:text-3xl md:mb-16 md:text-4xl">{t('features')}</h2>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {([1, 2, 3, 4, 5, 6] as const).map((n) => (
             <div

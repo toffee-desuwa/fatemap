@@ -29,7 +29,7 @@ jest.mock('@/components/map/FateMap', () => ({
   },
 }));
 
-// Mock ScenarioInput
+// Mock ScenarioInput — rendered twice (mobile + desktop), capture last props
 let capturedScenarioInputProps: Record<string, unknown> = {};
 jest.mock('@/components/simulation/ScenarioInput', () => ({
   ScenarioInput: (props: Record<string, unknown>) => {
@@ -38,7 +38,7 @@ jest.mock('@/components/simulation/ScenarioInput', () => ({
   },
 }));
 
-// Mock ImpactReport
+// Mock ImpactReport — rendered twice (mobile + desktop) when result exists
 let capturedImpactReportProps: Record<string, unknown> = {};
 jest.mock('@/components/simulation/ImpactReport', () => ({
   ImpactReport: (props: Record<string, unknown>) => {
@@ -120,9 +120,10 @@ describe('AppShell', () => {
     expect(screen.getByTestId('mock-fate-map')).toBeInTheDocument();
   });
 
-  it('renders ScenarioInput', () => {
+  it('renders ScenarioInput (mobile + desktop instances)', () => {
     render(<AppShell />);
-    expect(screen.getByTestId('mock-scenario-input')).toBeInTheDocument();
+    const inputs = screen.getAllByTestId('mock-scenario-input');
+    expect(inputs.length).toBe(2); // mobile overlay + desktop right panel
   });
 
   it('renders EventFeed', () => {
@@ -180,10 +181,11 @@ describe('AppShell', () => {
     expect(screen.queryByTestId('mock-impact-report')).not.toBeInTheDocument();
   });
 
-  it('renders ImpactReport when result exists', () => {
+  it('renders ImpactReport when result exists (mobile + desktop)', () => {
     mockSimulationState.result = mockResult;
     render(<AppShell />);
-    expect(screen.getByTestId('mock-impact-report')).toBeInTheDocument();
+    const reports = screen.getAllByTestId('mock-impact-report');
+    expect(reports.length).toBe(2); // mobile bottom sheet + desktop right panel
   });
 
   it('passes result to ImpactReport', () => {
@@ -199,10 +201,17 @@ describe('AppShell', () => {
     expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
   });
 
-  it('renders error message when error exists', () => {
+  it('renders error message when error exists (desktop)', () => {
     mockSimulationState.error = 'LLM failed';
     render(<AppShell />);
     const el = screen.getByTestId('error-message');
+    expect(el).toHaveTextContent('LLM failed');
+  });
+
+  it('renders mobile error when error exists', () => {
+    mockSimulationState.error = 'LLM failed';
+    render(<AppShell />);
+    const el = screen.getByTestId('mobile-error');
     expect(el).toHaveTextContent('LLM failed');
   });
 
@@ -294,5 +303,53 @@ describe('AppShell', () => {
     });
 
     expect(screen.queryByTestId('flash-overlay')).not.toBeInTheDocument();
+  });
+
+  // --- Responsive layout ---
+
+  it('uses responsive grid classes', () => {
+    render(<AppShell />);
+    const grid = screen.getByTestId('app-shell').querySelector('.grid');
+    expect(grid?.className).toContain('grid-cols-1');
+    expect(grid?.className).toContain('md:grid-cols-[1fr_360px]');
+    expect(grid?.className).toContain('lg:grid-cols-[240px_1fr_360px]');
+  });
+
+  it('hides event feed on tablet/mobile with lg:block', () => {
+    render(<AppShell />);
+    const feedContainer = screen.getByTestId('mock-event-feed').parentElement;
+    expect(feedContainer?.className).toContain('hidden');
+    expect(feedContainer?.className).toContain('lg:block');
+  });
+
+  it('renders mobile floating input overlay', () => {
+    render(<AppShell />);
+    const mobileInput = screen.getByTestId('mobile-input');
+    expect(mobileInput.className).toContain('md:hidden');
+    expect(mobileInput.className).toContain('absolute');
+  });
+
+  it('renders mobile bottom sheet when result exists', () => {
+    mockSimulationState.result = mockResult;
+    render(<AppShell />);
+    const mobileReport = screen.getByTestId('mobile-report');
+    expect(mobileReport.className).toContain('md:hidden');
+    expect(mobileReport.className).toContain('absolute');
+    expect(mobileReport.className).toContain('bottom-0');
+  });
+
+  it('does not render mobile bottom sheet when no result', () => {
+    render(<AppShell />);
+    expect(screen.queryByTestId('mobile-report')).not.toBeInTheDocument();
+  });
+
+  it('desktop right panel has hidden md:flex classes', () => {
+    render(<AppShell />);
+    const shell = screen.getByTestId('app-shell');
+    // Find the panel with border-l that contains a desktop ScenarioInput
+    const panels = shell.querySelectorAll('[class*="border-l"]');
+    const rightPanel = Array.from(panels).find(p => p.className.includes('md:flex'));
+    expect(rightPanel).toBeTruthy();
+    expect(rightPanel?.className).toContain('hidden');
   });
 });
