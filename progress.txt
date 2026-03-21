@@ -151,3 +151,15 @@
 - Created src/lib/__tests__/city-markers.test.ts: 28 tests (layer count, IDs, pickability, radius units, idle/ripple/network/persistent phases, unknown cities, empty inputs, severity colors, positive direction, white dot, fixed dot radius, coordinates, stagger index, updateTriggers, pulse radius range/variation/peak/trough, stagger opacity timing)
 - Build: clean, Lint: clean, Tests: 174 (174 passing)
 - Next action: F013 - Shockwave ripple animation
+
+## Session 15 (F013 - Shockwave ripple animation — 2026-03-21)
+- Created src/lib/impact-wave.ts: createShockwaveLayers() + getRingRadius() + getRingOpacity()
+  - 4 ScatterplotLayer rings (stroked, unfilled) expanding from epicenter
+  - Same expansion rate with staggered starts (0.3s apart) for natural spacing
+  - Color gradient: red (outermost, ring 0) → orange (rings 1-2) → yellow (innermost, ring 3)
+  - Opacity: outer brighter (200) → inner dimmer (80), quick 100ms fade-in, 300ms fade-out at end
+  - Radius in meters (up to 5,000km) for geographic scale
+  - Only active during ripple phase (0-2s); empty data for idle/network/persistent
+- Created src/lib/__tests__/impact-wave.test.ts: 36 tests (layer count, sequential IDs, pickability, radius/line-width units, stroked+unfilled, phase visibility for ripple/idle/network/persistent, ring colors, radius ordering, opacity ordering, updateTriggers, line width, idle zero radius/opacity, getRingRadius stagger/increase/cap/ordering, getRingOpacity stagger/fade-in/base-opacities/fade-out)
+- Build: clean, Lint: clean, Tests: 210 (210 passing)
+- Next action: F014 - FateMap component

@@ -119,7 +119,7 @@
       "name": "Shockwave ripple animation",
       "description": "Expanding concentric circles from epicenter",
       "priority": 13,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002"]
     },
     {
