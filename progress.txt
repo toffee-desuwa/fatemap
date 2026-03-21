@@ -207,3 +207,20 @@
 - Created src/components/simulation/__tests__/ImpactReport.test.tsx: 32 tests
 - Build: clean, Lint: clean, Tests: 296 (296 passing)
 - Next action: F017 - AppShell & Header
+
+## Session 19 (F017 - AppShell & Header — 2026-03-21)
+- Created src/components/layout/Header.tsx: top nav with FateMap branding, Dashboard/Settings nav links, LocaleSwitcher, AI status indicator (reads localStorage), GitHub link
+  - currentPage prop highlights active nav link
+  - AI status: green dot "Connected" when provider+key exist, gray dot "Preset Only" otherwise
+- Created src/components/layout/AppShell.tsx: main layout wiring all components
+  - Grid layout grid-cols-[1fr_360px] (map left, right panel fixed 360px)
+  - Wires useSimulation hook → ScenarioInput (simulate/loading/suggestions), FateMap (result/phase), ImpactReport (result/selected/clear)
+  - selectedCountryId state: toggled by country click from map or report, cleared on simulation clear
+  - Flash overlay: 150ms ease-out white pulse on idle→ripple transition via flashPulse keyframe
+  - Error message display between input and report
+- Added flashPulse keyframe to globals.css
+- Added i18n keys: common.dashboard, common.aiConnected, common.aiPresetOnly (en + zh)
+- Created src/components/layout/__tests__/Header.test.tsx: 13 tests (render, brand, nav links, locale switcher, github, AI status with/without key, current page highlighting)
+- Created src/components/layout/__tests__/AppShell.test.tsx: 21 tests (structure, wiring, ImpactReport conditional, error display, country click toggle, clear, flash overlay)
+- Build: clean, Lint: clean, Tests: 330 (330 passing)
+- Next action: F017a - Code quality audit #3

@@ -151,7 +151,7 @@
       "name": "AppShell & Header",
       "description": "Main layout container + navigation + AI status indicator",
       "priority": 17,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F009", "F014", "F015", "F016"]
     },
     {
