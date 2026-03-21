@@ -163,3 +163,16 @@
 - Created src/lib/__tests__/impact-wave.test.ts: 36 tests (layer count, sequential IDs, pickability, radius/line-width units, stroked+unfilled, phase visibility for ripple/idle/network/persistent, ring colors, radius ordering, opacity ordering, updateTriggers, line width, idle zero radius/opacity, getRingRadius stagger/increase/cap/ordering, getRingOpacity stagger/fade-in/base-opacities/fade-out)
 - Build: clean, Lint: clean, Tests: 210 (210 passing)
 - Next action: F014 - FateMap component
+
+## Session 16 (F014 - FateMap component — 2026-03-21)
+- Created src/components/map/FateMap.tsx: main interactive map wiring all 4 visualization layer systems
+  - DeckGL + MapLibre GL (dark-matter style, no API key) with controller enabled
+  - Layer ordering: country fill (GeoJsonLayer) → network glow (3 PathLayers) → city markers (2 ScatterplotLayers) → shockwave rings (4 ScatterplotLayers) = 10 layers total
+  - requestAnimationFrame loop for animationTime, starts on ripple/network/persistent, stops on idle
+  - GeoJSON fetched on mount via /geo/countries-110m.json, converted with convertTopoJson
+  - Click handling: country-fill → onCountryClick(alpha3), city-marker-dot → onCityClick(cityId)
+  - Tooltip: bilingual city/country names on hover via deck.gl getTooltip
+  - Initial view: longitude 20, latitude 20, zoom 1.5 for world overview
+- Created src/components/map/__tests__/FateMap.test.tsx: 30 tests (rendering, DeckGL props, MapGL style, view state, GeoJSON fetch, TopoJSON conversion, fetch failure, layer composition idle/ripple/network phases, empty vs populated results, animation loop start/stop/cancel, RAF callback, click handling for country/city/null/missing-alpha3, tooltip city/country/unknown/null)
+- Build: clean, Lint: clean, Tests: 240 (240 passing)
+- Next action: F015 - ScenarioInput component

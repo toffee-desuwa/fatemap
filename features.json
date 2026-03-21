@@ -127,7 +127,7 @@
       "name": "FateMap component",
       "description": "Main interactive map wiring all visualization layers",
       "priority": 14,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F010", "F011", "F012", "F013"]
     },
     {
