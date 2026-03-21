@@ -15,7 +15,7 @@
       "name": "Type definitions & color palette",
       "description": "All shared TypeScript interfaces + severity colors",
       "priority": 2,
-      "status": "backlog",
+      "status": "in-progress",
       "dependencies": ["F001"]
     },
     {
