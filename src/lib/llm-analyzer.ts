@@ -40,18 +40,27 @@ Rules:
 - Return ONLY the JSON object, no other text`;
 }
 
+/** Minimal shape of an OpenAI-compatible chat completion response */
+interface OpenAiResponse {
+  choices?: { message?: { content?: string } }[];
+}
+
+/** Minimal shape of an Anthropic messages response */
+interface AnthropicResponse {
+  content?: { text?: string }[];
+}
+
 /**
  * Extract the LLM's text content from a provider-specific response body.
  */
 function extractContent(
   format: 'openai' | 'anthropic',
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any,
+  body: OpenAiResponse | AnthropicResponse,
 ): string {
   if (format === 'anthropic') {
-    return body?.content?.[0]?.text ?? '';
+    return (body as AnthropicResponse)?.content?.[0]?.text ?? '';
   }
-  return body?.choices?.[0]?.message?.content ?? '';
+  return (body as OpenAiResponse)?.choices?.[0]?.message?.content ?? '';
 }
 
 /**

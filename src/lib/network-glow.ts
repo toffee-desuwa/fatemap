@@ -179,68 +179,32 @@ export function createNetworkGlowLayers({
 
   const updateTriggers = [animationPhase, activatedIds, pulseTime];
 
-  return [
-    // Outer glow — widest, lowest opacity
-    new PathLayer<NetworkSegment>({
-      id: 'network-glow-outer',
-      data: segments,
-      getPath: (d) => d.path,
-      getColor: (d) => {
-        const config = getConfig(d);
-        const color = resolveColor(d);
-        return [...color, Math.round(applyPulse(config.outer.opacity, d) * 255)] as [
-          number,
-          number,
-          number,
-          number,
-        ];
-      },
-      getWidth: (d) => getConfig(d).outer.width * strengthMultiplier(d),
-      widthUnits: 'pixels' as const,
-      pickable: false,
-      updateTriggers: { getColor: updateTriggers, getWidth: updateTriggers },
-    }),
-
-    // Mid glow — medium width, medium opacity
-    new PathLayer<NetworkSegment>({
-      id: 'network-glow-mid',
-      data: segments,
-      getPath: (d) => d.path,
-      getColor: (d) => {
-        const config = getConfig(d);
-        const color = resolveColor(d);
-        return [...color, Math.round(applyPulse(config.mid.opacity, d) * 255)] as [
-          number,
-          number,
-          number,
-          number,
-        ];
-      },
-      getWidth: (d) => getConfig(d).mid.width * strengthMultiplier(d),
-      widthUnits: 'pixels' as const,
-      pickable: false,
-      updateTriggers: { getColor: updateTriggers, getWidth: updateTriggers },
-    }),
-
-    // Core line — thinnest, highest opacity, pickable
-    new PathLayer<NetworkSegment>({
-      id: 'network-glow-core',
-      data: segments,
-      getPath: (d) => d.path,
-      getColor: (d) => {
-        const config = getConfig(d);
-        const color = resolveColor(d);
-        return [...color, Math.round(applyPulse(config.core.opacity, d) * 255)] as [
-          number,
-          number,
-          number,
-          number,
-        ];
-      },
-      getWidth: (d) => getConfig(d).core.width * strengthMultiplier(d),
-      widthUnits: 'pixels' as const,
-      pickable: true,
-      updateTriggers: { getColor: updateTriggers, getWidth: updateTriggers },
-    }),
+  const layerDefs: { key: keyof GlowConfig; pickable: boolean }[] = [
+    { key: 'outer', pickable: false },
+    { key: 'mid', pickable: false },
+    { key: 'core', pickable: true },
   ];
+
+  return layerDefs.map(
+    ({ key, pickable }) =>
+      new PathLayer<NetworkSegment>({
+        id: `network-glow-${key}`,
+        data: segments,
+        getPath: (d) => d.path,
+        getColor: (d) => {
+          const config = getConfig(d);
+          const color = resolveColor(d);
+          return [...color, Math.round(applyPulse(config[key].opacity, d) * 255)] as [
+            number,
+            number,
+            number,
+            number,
+          ];
+        },
+        getWidth: (d) => getConfig(d)[key].width * strengthMultiplier(d),
+        widthUnits: 'pixels' as const,
+        pickable,
+        updateTriggers: { getColor: updateTriggers, getWidth: updateTriggers },
+      }),
+  );
 }

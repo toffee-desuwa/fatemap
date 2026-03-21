@@ -103,7 +103,7 @@
       "name": "Code quality audit #2",
       "description": "Review F006-F011: God components, duplicate code, type safety, test coverage",
       "priority": 11.5,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F011"]
     },
     {
