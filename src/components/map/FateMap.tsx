@@ -25,6 +25,14 @@ import { createShockwaveLayers } from '@/lib/impact-wave';
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
+const TOOLTIP_STYLE = {
+  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  color: '#fff',
+  fontSize: '12px',
+  padding: '4px 8px',
+  borderRadius: '4px',
+};
+
 const INITIAL_VIEW_STATE = {
   longitude: 20,
   latitude: 20,
@@ -173,16 +181,7 @@ export function FateMap({
       const data = info.object as { cityId?: string; severity?: string };
       const city = CITIES.find((c) => c.id === data.cityId);
       if (city) {
-        return {
-          text: `${city.name} (${city.nameCn})`,
-          style: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            color: '#fff',
-            fontSize: '12px',
-            padding: '4px 8px',
-            borderRadius: '4px',
-          },
-        };
+        return { text: `${city.name} (${city.nameCn})`, style: TOOLTIP_STYLE };
       }
     }
 
@@ -194,16 +193,7 @@ export function FateMap({
       if (alpha3) {
         const country = COUNTRIES.find((c) => c.id === alpha3);
         if (country) {
-          return {
-            text: `${country.name} (${country.nameCn})`,
-            style: {
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              color: '#fff',
-              fontSize: '12px',
-              padding: '4px 8px',
-              borderRadius: '4px',
-            },
-          };
+          return { text: `${country.name} (${country.nameCn})`, style: TOOLTIP_STYLE };
         }
       }
     }

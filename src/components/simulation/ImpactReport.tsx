@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useMemo } from 'react';
 import type { SimulationResult } from '../../lib/types';
-import { COUNTRIES } from '../../lib/countries';
-import { CITIES } from '../../lib/cities';
+import { SEVERITY_BADGE, SEVERITY_HEX } from '../../lib/colors';
+import { countryFlag, countryMap, cityMap } from '../../lib/country-utils';
 import { AnimatedNumber } from '../charts/AnimatedNumber';
 
 const SEVERITY_ORDER: Record<string, number> = {
@@ -12,37 +12,6 @@ const SEVERITY_ORDER: Record<string, number> = {
   medium: 2,
   low: 3,
 };
-
-const SEVERITY_BADGE: Record<string, string> = {
-  critical: 'bg-[#ff3344] text-white',
-  high: 'bg-[#ff8844] text-white',
-  medium: 'bg-[#ffcc44] text-black',
-  low: 'bg-[#4488ff] text-white',
-};
-
-// ISO alpha-3 → alpha-2 for flag emoji (our 48 countries)
-const A3_TO_A2: Record<string, string> = {
-  USA: 'US', CAN: 'CA', MEX: 'MX', BRA: 'BR', ARG: 'AR', CHL: 'CL', COL: 'CO', VEN: 'VE',
-  GBR: 'GB', FRA: 'FR', DEU: 'DE', ITA: 'IT', ESP: 'ES', NLD: 'NL', POL: 'PL', UKR: 'UA', SWE: 'SE',
-  RUS: 'RU', TUR: 'TR', ISR: 'IL', SAU: 'SA', IRN: 'IR', IRQ: 'IQ', ARE: 'AE', QAT: 'QA', EGY: 'EG',
-  CHN: 'CN', JPN: 'JP', KOR: 'KR', PRK: 'KP', TWN: 'TW',
-  IND: 'IN', PAK: 'PK', BGD: 'BD',
-  IDN: 'ID', VNM: 'VN', THA: 'TH', PHL: 'PH', MYS: 'MY', SGP: 'SG', MMR: 'MM',
-  KAZ: 'KZ', UZB: 'UZ',
-  NGA: 'NG', ZAF: 'ZA', KEN: 'KE', ETH: 'ET',
-  AUS: 'AU', NZL: 'NZ',
-};
-
-export function countryFlag(alpha3: string): string {
-  const alpha2 = A3_TO_A2[alpha3];
-  if (!alpha2) return '';
-  return String.fromCodePoint(
-    ...alpha2.split('').map((c) => 0x1f1e6 + c.charCodeAt(0) - 65),
-  );
-}
-
-const countryMap = new Map(COUNTRIES.map((c) => [c.id, c]));
-const cityMap = new Map(CITIES.map((c) => [c.id, c]));
 
 interface ImpactReportProps {
   result: SimulationResult;
@@ -170,7 +139,7 @@ export function ImpactReport({
                 <span
                   className={`shrink-0 w-10 text-right font-mono ${
                     impact.direction === 'positive'
-                      ? 'text-[#44ff88]'
+                      ? `text-[${SEVERITY_HEX.positive}]`
                       : 'text-[var(--color-foreground)]'
                   }`}
                 >

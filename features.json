@@ -159,7 +159,7 @@
       "name": "Code quality audit #3",
       "description": "Review F012-F017: God components, duplicate code, type safety, test coverage",
       "priority": 17.5,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F017"]
     },
     {

@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ImpactReport, countryFlag } from '../ImpactReport';
+import { ImpactReport } from '../ImpactReport';
+import { countryFlag } from '@/lib/country-utils';
 import type { SimulationResult } from '@/lib/types';
 
 // Minimal result factory

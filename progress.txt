@@ -224,3 +224,19 @@
 - Created src/components/layout/__tests__/AppShell.test.tsx: 21 tests (structure, wiring, ImpactReport conditional, error display, country click toggle, clear, flash overlay)
 - Build: clean, Lint: clean, Tests: 330 (330 passing)
 - Next action: F017a - Code quality audit #3
+
+## Session 20 (F017a - Code quality audit #3 — 2026-03-21)
+- Audited 7 source files across F012-F017 (city-markers, impact-wave, FateMap, ScenarioInput, ImpactReport, Header, AppShell)
+- No god components (max 252 lines in ImpactReport, reduced to ~210 after extraction)
+- No `any` types found in source files
+- Extracted countryFlag() + A3_TO_A2 + countryMap + cityMap from ImpactReport to shared src/lib/country-utils.ts
+  - Fixed A3_TO_A2: added missing NOR, CHE, GRC mappings (now all 48 countries covered)
+- Added rgbToHex() + SEVERITY_HEX + SEVERITY_BADGE to src/lib/colors.ts (single source of truth for severity colors)
+  - ImpactReport now uses SEVERITY_HEX.positive instead of hardcoded #44ff88
+  - ImpactReport uses shared SEVERITY_BADGE instead of local duplicate
+- Consolidated duplicate handleExample/handleSuggestion → single handleScenarioSelect in ScenarioInput.tsx
+- Extracted TOOLTIP_STYLE constant in FateMap.tsx (was duplicated in city and country tooltip branches)
+- Created src/lib/__tests__/country-utils.test.ts: 5 tests (flag conversion, unknown codes, all 48 countries, countryMap, cityMap)
+- Created src/lib/__tests__/colors.test.ts: 5 tests (hex derivation, RGB match, badge classes, hex in badges, text colors)
+- Build: clean, Lint: clean, Tests: 340 (340 passing, +10 new)
+- Next action: F018 - Dashboard page

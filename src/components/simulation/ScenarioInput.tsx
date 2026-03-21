@@ -51,15 +51,7 @@ export function ScenarioInput({
     [handleSubmit],
   );
 
-  const handleExample = useCallback(
-    (scenario: PresetScenario) => {
-      setInput(scenario.eventText);
-      onSimulate(scenario.eventText);
-    },
-    [onSimulate],
-  );
-
-  const handleSuggestion = useCallback(
+  const handleScenarioSelect = useCallback(
     (scenario: PresetScenario) => {
       setInput(scenario.eventText);
       onSimulate(scenario.eventText);
@@ -114,7 +106,7 @@ export function ScenarioInput({
             {suggestions.map((s) => (
               <button
                 key={s.id}
-                onClick={() => handleSuggestion(s)}
+                onClick={() => handleScenarioSelect(s)}
                 className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-xs text-[var(--color-foreground)] transition-colors hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-hover)]"
               >
                 {s.name}
@@ -130,7 +122,7 @@ export function ScenarioInput({
           {EXAMPLES.map((scenario) => (
             <button
               key={scenario.id}
-              onClick={() => handleExample(scenario)}
+              onClick={() => handleScenarioSelect(scenario)}
               className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-1 text-xs text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-primary-light)] hover:text-[var(--color-foreground)]"
             >
               {scenario.name}
