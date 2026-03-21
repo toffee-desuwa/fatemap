@@ -83,3 +83,15 @@
 - Created src/lib/__tests__/llm-schema.test.ts: 14 tests (valid JSON, markdown fences, bare fences, unknown countryId, unknown cityId, clamp >50, clamp <-50, missing fields, invalid JSON, empty string, unknown epicenter, invalid relationship entries, extra fields, numeric string coercion)
 - Build: clean, Lint: clean, Tests: 69 (69 passing)
 - Next action: F008 - LLM analyzer & providers
+
+## Session 9 (F008 - LLM analyzer & providers — 2026-03-21)
+- Created src/lib/llm-providers.ts: 4 BYOK providers (DeepSeek, Gemini, OpenAI, Anthropic) with getProvider() helper
+- Added `format: 'openai' | 'anthropic'` field to LlmProvider interface in types.ts
+- Created src/lib/llm-analyzer.ts: analyzeWithLlm() + buildSystemPrompt()
+  - System prompt includes full country list (48) + relationship network (142) as context
+  - Handles OpenAI-format (system+user messages, /chat/completions) and Anthropic-format (system field, /messages)
+  - Response piped through parseSimulationResponse (Zod validation from F007)
+  - AbortSignal support for timeout cancellation
+- Created src/lib/__tests__/llm-analyzer.test.ts: 10 tests (system prompt content, OpenAI request format, Anthropic request format, valid response parsing, network failure, timeout abort, HTTP error, invalid JSON, markdown fences, Anthropic response extraction)
+- Build: clean, Lint: clean, Tests: 79 (79 passing)
+- Next action: F009 - Simulation hook

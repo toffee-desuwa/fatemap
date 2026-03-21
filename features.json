@@ -71,7 +71,7 @@
       "name": "LLM analyzer & providers",
       "description": "BYOK multi-provider LLM integration (DeepSeek/Gemini/OpenAI/Anthropic)",
       "priority": 8,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F007"]
     },
     {
