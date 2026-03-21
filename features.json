@@ -79,7 +79,7 @@
       "name": "Simulation hook",
       "description": "useSimulation React hook (keyword->LLM fallback->animation phases)",
       "priority": 9,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F006", "F008"]
     },
     {

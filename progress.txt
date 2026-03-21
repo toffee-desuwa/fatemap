@@ -95,3 +95,12 @@
 - Created src/lib/__tests__/llm-analyzer.test.ts: 10 tests (system prompt content, OpenAI request format, Anthropic request format, valid response parsing, network failure, timeout abort, HTTP error, invalid JSON, markdown fences, Anthropic response extraction)
 - Build: clean, Lint: clean, Tests: 79 (79 passing)
 - Next action: F009 - Simulation hook
+
+## Session 10 (F009 - Simulation hook — 2026-03-21)
+- Created src/hooks/useSimulation.ts: React hook orchestrating keyword→LLM fallback→animation phases
+  - matchScenario() first (sync), then LLM if provider+key in localStorage, else suggestions
+  - Animation phase cycle: idle → ripple (2s) → network (3s) → persistent, with timer cleanup
+  - localStorage keys: fatemap-llm-provider, fatemap-llm-apikey
+- Created src/hooks/__tests__/useSimulation.test.ts: 10 tests (idle state, keyword match, no-match suggestions, LLM call, LLM error, animation phases, clear reset, loading state, empty input, timer cleanup on re-simulate)
+- Build: clean, Lint: clean, Tests: 89 (89 passing)
+- Next action: F010 - Network glow lines
