@@ -39,7 +39,7 @@
       "name": "Preset scenarios",
       "description": "28 pre-computed geopolitical scenario results with tests",
       "priority": 5,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002", "F003", "F004"]
     },
     {

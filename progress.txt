@@ -47,3 +47,12 @@
 - Created src/lib/__tests__/relationships.test.ts: 9 tests (count, unique IDs, ID format, valid from/to, no self-references, valid types, strength range, all types covered, no duplicates)
 - Build: clean, Lint: clean, Tests: 26 (26 passing)
 - Next action: F005 - Preset scenarios
+
+## Session 5 (F005 - Preset scenarios — 2026-03-21)
+- Created src/lib/scenarios.ts: 28 preset geopolitical scenarios with full SimulationResult data
+- Categories: military (5), trade (3), energy (3), climate (4), health (2), political (5), economic (2), technology (4)
+- Each scenario: epicenter + 5-15 country impacts + 3-8 city impacts + activated relationship IDs + bilingual summaries/keywords
+- All references validated: countryIds → COUNTRIES, cityIds → CITIES, relationship IDs → RELATIONSHIPS
+- Created src/lib/__tests__/scenarios.test.ts: 17 tests (count, unique IDs, kebab-case, valid categories, all 8 categories covered, keywords non-empty, valid epicenter, valid coordinates, valid countryImpact IDs, 5-15 country impacts, valid severity/direction, impactPercent range, valid cityImpact IDs, 3-8 city impacts, valid activated relationships, non-empty summaries, non-empty names/descriptions)
+- Build: clean, Lint: clean, Tests: 43 (43 passing)
+- Next action: F005a - Code quality audit #1
