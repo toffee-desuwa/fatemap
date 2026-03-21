@@ -183,7 +183,7 @@
       "name": "Settings page (BYOK)",
       "description": "API key configuration with provider dropdown and test button",
       "priority": 20,
-      "status": "backlog",
+      "status": "in-progress",
       "dependencies": ["F008"]
     },
     {

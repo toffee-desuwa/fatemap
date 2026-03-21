@@ -24,5 +24,20 @@
     "epicenter": "震中：{flag} {name}",
     "countryImpacts": "国家影响 ({count})",
     "cityImpacts": "城市影响 ({count})"
+  },
+  "settings": {
+    "title": "API 密钥设置",
+    "description": "配置您的 LLM 提供商以启用自定义场景分析。您的 API 密钥仅存储在浏览器本地。",
+    "provider": "提供商",
+    "apiKey": "API 密钥",
+    "apiKeyPlaceholder": "输入您的 API 密钥",
+    "save": "保存",
+    "test": "测试",
+    "testing": "测试中...",
+    "saved": "设置已保存",
+    "testSuccess": "连接成功！",
+    "testFailed": "连接失败：{error}",
+    "clear": "清除",
+    "cleared": "设置已清除"
   }
 }

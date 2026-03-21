@@ -24,5 +24,20 @@
     "epicenter": "Epicenter: {flag} {name}",
     "countryImpacts": "Country Impacts ({count})",
     "cityImpacts": "City Impacts ({count})"
+  },
+  "settings": {
+    "title": "API Key Settings",
+    "description": "Configure your LLM provider to enable custom scenario analysis. Your API key is stored locally in your browser.",
+    "provider": "Provider",
+    "apiKey": "API Key",
+    "apiKeyPlaceholder": "Enter your API key",
+    "save": "Save",
+    "test": "Test",
+    "testing": "Testing...",
+    "saved": "Settings saved",
+    "testSuccess": "Connection successful!",
+    "testFailed": "Connection failed: {error}",
+    "clear": "Clear",
+    "cleared": "Settings cleared"
   }
 }
