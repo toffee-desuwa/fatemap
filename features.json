@@ -111,7 +111,7 @@
       "name": "City impact markers",
       "description": "ScatterplotLayer pulsing markers for affected cities",
       "priority": 12,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002", "F003"]
     },
     {

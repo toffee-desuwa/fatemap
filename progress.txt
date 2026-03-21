@@ -139,3 +139,15 @@
 - Test coverage: 103 tests across 6 modules, all paths covered
 - Build: clean, Lint: clean, Tests: 146 (146 passing)
 - Next action: F012 - City impact markers
+
+## Session 14 (F012 - City impact markers — 2026-03-21)
+- Created src/lib/city-markers.ts: createCityMarkerLayers() + getCityPulseRadius() + getStaggerOpacity()
+  - Two ScatterplotLayers (halo + dot) adapted from FreightSeer pulsing-ports.ts
+  - Severity-based halo color, positive direction → green override
+  - Staggered fade-in (100ms per city, 300ms fade duration) for sequential reveal
+  - Only visible during network/persistent phases; idle/ripple → empty data
+  - Halo: pulsing radius (7±2px), severity-colored, 0.2 opacity
+  - Dot: fixed 3px, white, pickable for tooltips
+- Created src/lib/__tests__/city-markers.test.ts: 28 tests (layer count, IDs, pickability, radius units, idle/ripple/network/persistent phases, unknown cities, empty inputs, severity colors, positive direction, white dot, fixed dot radius, coordinates, stagger index, updateTriggers, pulse radius range/variation/peak/trough, stagger opacity timing)
+- Build: clean, Lint: clean, Tests: 174 (174 passing)
+- Next action: F013 - Shockwave ripple animation
