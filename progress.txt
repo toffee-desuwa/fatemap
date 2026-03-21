@@ -26,3 +26,9 @@
 - Fixed jest.config.ts: added modulePathIgnorePatterns for .next/, --passWithNoTests
 - Build: clean, Lint: clean, Tests: 0 (pass with no tests)
 - Next action: F002 - Type definitions & color palette
+
+## Session 2 (F002 - Type definitions & color palette — 2026-03-21)
+- Created src/lib/types.ts: 9 interfaces + AnimationPhase type (Country, City, Relationship, CountryImpact, CityImpact, SimulationResult, PresetScenario, LlmProvider)
+- Created src/lib/colors.ts: SEVERITY_COLORS with RGB tuples for deck.gl (critical/high/medium/low/positive/unaffected)
+- Build: clean, Lint: clean, Tests: 0 (no runtime logic to test)
+- Next action: F003 - Countries & cities data
