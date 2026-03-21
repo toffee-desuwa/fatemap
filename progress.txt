@@ -278,3 +278,21 @@
 - Created tests: ApiKeySettings (27 tests), SettingsClient (3 tests), page (2 tests)
 - Build: clean, Lint: clean, Tests: 385 (385 passing, +32 new)
 - Next action: F021 - Landing page
+
+## Session 24 (F021 - Landing page — 2026-03-21)
+- Created src/components/map/FateHeroMap.tsx: non-interactive hero map with auto-cycling scenarios
+  - Cycles 3 diverse presets (taiwan-strait-crisis, hormuz-strait-blockade, ukraine-russia-escalation) every 10s
+  - Reuses full layer stack (country fill, network glow, city markers, shockwave) from FateMap
+  - Controller disabled, no click/tooltip handlers, starts after onLoad + 1s delay
+  - Animation phases: idle → ripple (2s) → network (3s) → persistent, then cycles
+- Created src/app/[locale]/LandingClient.tsx: marketing-grade landing page client component
+  - Hero section: full-screen FateHeroMap background + gradient overlay + logo + tagline + CTA
+  - Features section: 6 cards in 3-col grid (scenarios, AI, visualization, relationships, bilingual, open source)
+  - Tech section: deck.gl, BYOK AI, Open Source badges
+  - Bottom CTA → /dashboard, footer
+  - Scroll indicator with bounce animation
+- Split page.tsx (server) + LandingClient.tsx (client) for ssr:false dynamic import compatibility
+- Added landing namespace to en.json and zh.json (18 keys: tagline, cta, features, tech badges, footer)
+- Created tests: FateHeroMap (13 tests), LandingClient (13 tests), page (2 tests)
+- Build: clean, Lint: clean, Tests: 414 (414 passing, +29 new)
+- Next action: F022 - OG image & meta tags
