@@ -315,3 +315,14 @@
 - Created tests: EventCard (12 tests), EventFeed (15 tests), updated AppShell (23 tests, +2 new), updated useSimulation (12 tests, +2 new)
 - Build: clean, Lint: clean, Tests: 460 (460 passing, +32 new)
 - Next action: F023a - Code quality audit #4
+
+## Session 27 (F023a - Code quality audit #4 — 2026-03-21)
+- Audited 12 source files across F018-F023 (dashboard page/client, settings page/client/ApiKeySettings, LandingClient, FateHeroMap, opengraph-image, twitter-image, EventCard, EventFeed, AppShell, useSimulation)
+- No god components found (max 218 lines in FateHeroMap, all cohesive single-purpose)
+- No `any` types found
+- Extracted duplicate OG image JSX (130 lines) from opengraph-image.tsx + twitter-image.tsx into shared src/app/og-content.tsx
+- Replaced non-null assertion (!) in FateHeroMap HERO_SCENARIOS with type-safe .filter() + type predicate
+- Imports clean, no other duplicate code
+- Test coverage: 460 tests across 32 suites, all paths covered
+- Build: clean, Lint: clean, Tests: 460 (460 passing)
+- Next action: F024 - Responsive design
