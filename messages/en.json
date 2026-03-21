@@ -1,0 +1,13 @@
+{
+  "common": {
+    "appName": "FateMap",
+    "launchApp": "Launch App",
+    "launchDashboard": "Launch Dashboard",
+    "github": "GitHub",
+    "settings": "Settings"
+  },
+  "metadata": {
+    "title": "FateMap — AI Geopolitical Prediction Sandbox",
+    "description": "Input any event. Watch the world react."
+  }
+}

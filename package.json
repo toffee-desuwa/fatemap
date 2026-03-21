@@ -8,15 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "@deck.gl/aggregation-layers": "^9.2.11",
     "@deck.gl/core": "^9.2.11",
     "@deck.gl/layers": "^9.2.11",
     "@deck.gl/mapbox": "^9.2.11",
     "@deck.gl/react": "^9.2.11",
-    "better-sqlite3": "^12.8.0",
     "deck.gl": "^9.2.11",
     "maplibre-gl": "^5.20.2",
     "misans": "^4.1.0",
@@ -25,7 +23,6 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-map-gl": "^8.1.0",
-    "recharts": "^3.8.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
@@ -33,7 +30,6 @@
     "@tailwindcss/postcss": "^4.0.0",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.2.0",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/jest": "^29.5.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",

@@ -12,3 +12,17 @@
 - Created SESSION_CONTEXT.md handoff document
 - Git initialized, initial commit
 - Next action: F001 - Project scaffold (copy infrastructure, create minimal app structure)
+
+## Session 1 (F001 - Project scaffold — 2026-03-21)
+- Cleaned package.json: removed better-sqlite3, recharts, @deck.gl/aggregation-layers
+- Copied i18n infrastructure from FreightSeer: routing.ts, request.ts, navigation.ts, middleware.ts
+- Copied 4 next-intl mocks for jest testing
+- Copied reusable components: AnimatedNumber, LocaleSwitcher
+- Created FateHeroMapLoader (renamed from HeroMapLoader, points to FateHeroMap)
+- Created placeholder FateHeroMap component
+- Created globals.css with FateMap branding (red primary #ff3344 instead of blue)
+- Created minimal app structure: root layout, locale layout, landing page
+- Created i18n messages files: en.json, zh.json (minimal common + metadata)
+- Fixed jest.config.ts: added modulePathIgnorePatterns for .next/, --passWithNoTests
+- Build: clean, Lint: clean, Tests: 0 (pass with no tests)
+- Next action: F002 - Type definitions & color palette

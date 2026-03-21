@@ -7,7 +7,7 @@
       "name": "Project scaffold",
       "description": "Next.js 15 + deck.gl + i18n infrastructure from FreightSeer",
       "priority": 1,
-      "status": "backlog",
+      "status": "done",
       "dependencies": []
     },
     {
@@ -41,6 +41,14 @@
       "priority": 5,
       "status": "backlog",
       "dependencies": ["F002", "F003", "F004"]
+    },
+    {
+      "id": "F005a",
+      "name": "Code quality audit #1",
+      "description": "Review F001-F005: God components, duplicate code, type safety, test coverage",
+      "priority": 5.5,
+      "status": "backlog",
+      "dependencies": ["F005"]
     },
     {
       "id": "F006",
@@ -91,6 +99,14 @@
       "dependencies": ["F002"]
     },
     {
+      "id": "F011a",
+      "name": "Code quality audit #2",
+      "description": "Review F006-F011: God components, duplicate code, type safety, test coverage",
+      "priority": 11.5,
+      "status": "backlog",
+      "dependencies": ["F011"]
+    },
+    {
       "id": "F012",
       "name": "City impact markers",
       "description": "ScatterplotLayer pulsing markers for affected cities",
@@ -139,6 +155,14 @@
       "dependencies": ["F009", "F014", "F015", "F016"]
     },
     {
+      "id": "F017a",
+      "name": "Code quality audit #3",
+      "description": "Review F012-F017: God components, duplicate code, type safety, test coverage",
+      "priority": 17.5,
+      "status": "backlog",
+      "dependencies": ["F017"]
+    },
+    {
       "id": "F018",
       "name": "Dashboard page",
       "description": "Wire AppShell into /[locale]/dashboard route",
@@ -185,6 +209,14 @@
       "priority": 23,
       "status": "backlog",
       "dependencies": ["F005", "F017"]
+    },
+    {
+      "id": "F023a",
+      "name": "Code quality audit #4",
+      "description": "Review F018-F023: God components, duplicate code, type safety, test coverage",
+      "priority": 23.5,
+      "status": "backlog",
+      "dependencies": ["F023"]
     },
     {
       "id": "F024",
