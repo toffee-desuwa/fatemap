@@ -191,7 +191,7 @@
       "name": "Landing page",
       "description": "Marketing-grade page with auto-playing hero map",
       "priority": 21,
-      "status": "backlog",
+      "status": "in-progress",
       "dependencies": ["F014"]
     },
     {
