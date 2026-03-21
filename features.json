@@ -143,7 +143,7 @@
       "name": "ImpactReport component",
       "description": "Right panel with severity-ranked country/city impacts",
       "priority": 16,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002"]
     },
     {

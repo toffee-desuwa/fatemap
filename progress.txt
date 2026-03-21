@@ -189,3 +189,21 @@
 - Created src/components/simulation/__tests__/ScenarioInput.test.tsx: 24 tests (rendering, textarea, submit button, char counter, 6 examples, input behavior, char max enforcement, disabled states, submit click/Enter/Shift+Enter/trim/whitespace-only, loading state show/hide/examples/disabled, example fill+submit/value, suggestions render/empty/undefined/loading/click)
 - Build: clean, Lint: clean, Tests: 264 (264 passing)
 - Next action: F016 - ImpactReport component
+
+## Session 18 (F016 - ImpactReport component — 2026-03-21)
+- Created src/components/simulation/ImpactReport.tsx: right panel showing simulation results
+  - Event title, epicenter display with flag emoji, summary text
+  - Country impacts sorted by severity (critical first), staggered fadeSlideIn animation (100ms/row)
+  - Flag emoji via ISO alpha-3→alpha-2 mapping for all 48 countries (exported countryFlag utility)
+  - AnimatedNumber for impactPercent, green text for positive direction countries
+  - Severity badges: critical(red), high(orange), medium(yellow), low(blue)
+  - Click/keyboard handlers for country row selection, ring highlight for selected
+  - Selected country reason panel appears contextually
+  - City impacts section with severity badges and impact type labels (underscores→spaces)
+  - City cascade animation continues after country rows (offset by country count)
+  - Clear button (✕) conditionally rendered via onClear prop
+  - Scroll-to-selected via useRef Map + scrollIntoView on selectedCountryId change
+- Added fadeSlideIn keyframe to globals.css (opacity 0→1, translateY 8px→0)
+- Created src/components/simulation/__tests__/ImpactReport.test.tsx: 32 tests
+- Build: clean, Lint: clean, Tests: 296 (296 passing)
+- Next action: F017 - AppShell & Header
