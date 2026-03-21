@@ -231,7 +231,7 @@
       "name": "README & final polish",
       "description": "Golden open-source README (EN + ZH) + build/lint/test pass",
       "priority": 25,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F024"]
     },
     {

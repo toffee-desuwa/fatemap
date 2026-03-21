@@ -338,3 +338,10 @@
 - Dual-render approach: ScenarioInput/ImpactReport rendered in both mobile overlay + desktop panel, CSS visibility toggles
 - Build: clean, Lint: clean, Tests: 472 (472 passing, +12 new)
 - Next action: F025 - README & final polish
+
+## Session 29 (F025 - README & final polish — 2026-03-21)
+- Created README.md: golden open-source structure with hook, features, tech stack, quick start, architecture diagram, data stats, project structure
+- Created README.zh-CN.md: full Chinese mirror with cross-links
+- Architecture section shows 4-layer deck.gl composition and simulation flow
+- Build: clean, Lint: clean, Tests: 472 (472 passing)
+- Next action: F026 - Vercel deployment
