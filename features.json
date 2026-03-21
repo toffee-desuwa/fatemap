@@ -95,7 +95,7 @@
       "name": "Country fill layer",
       "description": "GeoJsonLayer country polygons with severity-based fill colors",
       "priority": 11,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002"]
     },
     {

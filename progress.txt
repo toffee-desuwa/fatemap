@@ -117,3 +117,15 @@
 - Created src/lib/__tests__/network-glow.test.ts: 29 tests (3 layers, correct IDs, pickability, pixel units, idle/ripple/network/persistent phases, severity color mapping, higher-severity picking, unaffected color, strength-based width, layer width ordering, pulse range/peak/trough, pulse on critical only, config structure, empty inputs, unknown countries, updateTriggers)
 - Build: clean, Lint: clean, Tests: 118 (118 passing)
 - Next action: F011 - Country fill layer
+
+## Session 12 (F011 - Country fill layer — 2026-03-21)
+- Installed topojson-client + @types/topojson-client for TopoJSON→GeoJSON conversion
+- Created src/lib/country-regions.ts: convertTopoJson() + createCountryFillLayer()
+  - ISO_NUMERIC_TO_ALPHA3 mapping for all 48 countries (TopoJSON uses numeric IDs, our data uses alpha-3)
+  - convertTopoJson() transforms world-atlas TopoJSON, adds alpha3 property to each feature
+  - createCountryFillLayer() returns GeoJsonLayer with severity-driven fill colors
+  - Positive direction → green override; severity alpha: critical(180), high(140), medium(100), low(60)
+  - idle phase = all transparent; ripple/network/persistent = fills visible
+- Created src/lib/__tests__/country-regions.test.ts: 28 tests (ISO mapping count/correctness, TopoJSON conversion, alpha3 injection, null handling, layer ID, fill/stroke/pickable, idle/ripple/network/persistent phases, severity colors, positive/negative/mixed direction, unaffected/null transparent, empty inputs, updateTriggers, alpha ordering, border color)
+- Build: clean, Lint: clean, Tests: 146 (146 passing)
+- Next action: F011a - Code quality audit #2
