@@ -326,3 +326,15 @@
 - Test coverage: 460 tests across 32 suites, all paths covered
 - Build: clean, Lint: clean, Tests: 460 (460 passing)
 - Next action: F024 - Responsive design
+
+## Session 28 (F024 - Responsive design — 2026-03-21)
+- AppShell responsive grid: `grid-cols-1 md:grid-cols-[1fr_360px] lg:grid-cols-[240px_1fr_360px]`
+  - Mobile (<md): map fullscreen, floating input overlay at top, bottom sheet for results
+  - Tablet (md-lg): 2-col grid (map + right panel), event feed hidden
+  - Desktop (lg+): 3-col grid (feed + map + right panel)
+- Landing page: hero 60vh on mobile (`h-[60vh] md:h-screen`), smaller title text, hidden scroll indicator on mobile
+- Header: hide AI status text + GitHub link on small screens (`hidden sm:inline`), responsive padding
+- Touch: deck.gl handles tap=click natively, no code changes needed
+- Dual-render approach: ScenarioInput/ImpactReport rendered in both mobile overlay + desktop panel, CSS visibility toggles
+- Build: clean, Lint: clean, Tests: 472 (472 passing, +12 new)
+- Next action: F025 - README & final polish

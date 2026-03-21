@@ -223,7 +223,7 @@
       "name": "Responsive design",
       "description": "Tablet + mobile breakpoints + touch interactions",
       "priority": 24,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F018", "F023"]
     },
     {
