@@ -68,3 +68,11 @@
 - Test coverage: all data modules covered (43 tests), component tests deferred to later audits when components are built
 - Build: clean, Lint: clean, Tests: 43 (43 passing)
 - Next action: F006 - Keyword analyzer
+
+## Session 7 (F006 - Keyword analyzer — 2026-03-21)
+- Created src/lib/keyword-analyzer.ts: matchScenario() + findClosestScenarios()
+- Substring-based matching handles multi-word EN keywords and CJK without tokenization
+- Threshold ≥2 keyword matches to avoid false positives
+- Created src/lib/__tests__/keyword-analyzer.test.ts: 12 tests (exact match, Chinese, partial, gibberish, empty, single word, case insensitive, best match, sorted results, limit, empty results)
+- Build: clean, Lint: clean, Tests: 55 (55 passing)
+- Next action: F007 - Zod schema & LLM validation

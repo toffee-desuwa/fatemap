@@ -55,7 +55,7 @@
       "name": "Keyword analyzer",
       "description": "Rule-based scenario matching engine with tests",
       "priority": 6,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F005"]
     },
     {
