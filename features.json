@@ -47,7 +47,7 @@
       "name": "Code quality audit #1",
       "description": "Review F001-F005: God components, duplicate code, type safety, test coverage",
       "priority": 5.5,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F005"]
     },
     {
