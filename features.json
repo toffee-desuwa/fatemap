@@ -199,7 +199,7 @@
       "name": "OG image & meta tags",
       "description": "Social preview image + SEO metadata",
       "priority": 22,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F018"]
     },
     {

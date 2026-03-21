@@ -296,3 +296,12 @@
 - Created tests: FateHeroMap (13 tests), LandingClient (13 tests), page (2 tests)
 - Build: clean, Lint: clean, Tests: 414 (414 passing, +29 new)
 - Next action: F022 - OG image & meta tags
+
+## Session 25 (F022 - OG image & meta tags — 2026-03-21)
+- Created src/app/opengraph-image.tsx: Next.js ImageResponse (edge runtime) with dark gradient bg, FateMap branding, tagline, stats footer
+- Created src/app/twitter-image.tsx: same design inlined (re-export caused Next.js runtime detection warning)
+- Updated src/app/[locale]/layout.tsx: generateMetadata with locale-aware titles/descriptions (en/zh), OG tags, Twitter card (summary_large_image), alternates, robots
+- Added metadataBase to root layout.tsx to resolve OG image URLs
+- Created tests: opengraph-image (6 tests), layout-metadata (8 tests)
+- Build: clean, Lint: clean, Tests: 428 (428 passing, +14 new)
+- Next action: F023 - Event feed (Phase 2)
