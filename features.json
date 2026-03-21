@@ -23,7 +23,7 @@
       "name": "Countries & cities data",
       "description": "48 countries + 84 cities as typed arrays with tests",
       "priority": 3,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002"]
     },
     {

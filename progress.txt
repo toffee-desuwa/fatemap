@@ -32,3 +32,11 @@
 - Created src/lib/colors.ts: SEVERITY_COLORS with RGB tuples for deck.gl (critical/high/medium/low/positive/unaffected)
 - Build: clean, Lint: clean, Tests: 0 (no runtime logic to test)
 - Next action: F003 - Countries & cities data
+
+## Session 3 (F003 - Countries & cities data — 2026-03-21)
+- Created src/lib/countries.ts: 48 countries across 9 regions (NA, SA, Europe, East/SE/South Asia, Central Asia, Middle East, Africa, Oceania)
+- Created src/lib/cities.ts: 84 cities with 7 functional types (financial, port, tech, political, energy, manufacturing, logistics)
+- Created src/lib/__tests__/countries.test.ts: 8 tests (count, unique IDs, ISO alpha-3 format, names, coordinates, region)
+- Created src/lib/__tests__/cities.test.ts: 9 tests (count, unique IDs, kebab-case IDs, names, coordinates, countryId referential integrity, type enum, importance range)
+- Build: clean, Lint: clean, Tests: 17 (17 passing)
+- Next action: F004 - Relationships data
