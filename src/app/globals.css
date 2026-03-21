@@ -20,6 +20,12 @@ body {
   font-family: "MiSans", system-ui, -apple-system, sans-serif;
 }
 
+@keyframes flashPulse {
+  0% { opacity: 0; }
+  20% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
 @keyframes fadeSlideIn {
   from {
     opacity: 0;

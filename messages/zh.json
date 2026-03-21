@@ -4,7 +4,10 @@
     "launchApp": "启动应用",
     "launchDashboard": "启动仪表盘",
     "github": "GitHub",
-    "settings": "设置"
+    "settings": "设置",
+    "dashboard": "仪表盘",
+    "aiConnected": "AI: 已连接",
+    "aiPresetOnly": "AI: 仅预设"
   },
   "metadata": {
     "title": "FateMap — AI 地缘政治预测沙盘",

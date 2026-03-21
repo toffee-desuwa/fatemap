@@ -4,7 +4,10 @@
     "launchApp": "Launch App",
     "launchDashboard": "Launch Dashboard",
     "github": "GitHub",
-    "settings": "Settings"
+    "settings": "Settings",
+    "dashboard": "Dashboard",
+    "aiConnected": "AI: Connected",
+    "aiPresetOnly": "AI: Preset Only"
   },
   "metadata": {
     "title": "FateMap — AI Geopolitical Prediction Sandbox",
