@@ -97,6 +97,7 @@ describe('useSimulation', () => {
     expect(result.current.error).toBeNull();
     expect(result.current.suggestions).toEqual([]);
     expect(result.current.animationPhase).toBe('idle');
+    expect(result.current.activeScenarioId).toBeUndefined();
   });
 
   it('returns preset result instantly on keyword match', async () => {
@@ -110,6 +111,7 @@ describe('useSimulation', () => {
     expect(result.current.result).toEqual(fakeResult);
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
+    expect(result.current.activeScenarioId).toBe('taiwan-strait-crisis');
   });
 
   it('returns suggestions when no match and no LLM key', async () => {
@@ -205,6 +207,40 @@ describe('useSimulation', () => {
     expect(result.current.error).toBeNull();
     expect(result.current.suggestions).toEqual([]);
     expect(result.current.animationPhase).toBe('idle');
+    expect(result.current.activeScenarioId).toBeUndefined();
+  });
+
+  it('sets activeScenarioId on preset match', async () => {
+    mockMatchScenario.mockReturnValue(fakeScenario);
+    const { result } = renderHook(() => useSimulation());
+
+    await act(async () => {
+      await result.current.simulate('Taiwan');
+    });
+
+    expect(result.current.activeScenarioId).toBe('taiwan-strait-crisis');
+  });
+
+  it('clears activeScenarioId on LLM result', async () => {
+    // First set active via preset
+    mockMatchScenario.mockReturnValueOnce(fakeScenario);
+    const { result } = renderHook(() => useSimulation());
+
+    await act(async () => {
+      await result.current.simulate('Taiwan');
+    });
+    expect(result.current.activeScenarioId).toBe('taiwan-strait-crisis');
+
+    // Then LLM result
+    mockMatchScenario.mockReturnValueOnce(null);
+    mockAnalyzeWithLlm.mockResolvedValue({ result: fakeResult });
+    localStorage.setItem('fatemap-llm-provider', 'deepseek');
+    localStorage.setItem('fatemap-llm-apikey', 'sk-test-key');
+
+    await act(async () => {
+      await result.current.simulate('custom scenario');
+    });
+    expect(result.current.activeScenarioId).toBeUndefined();
   });
 
   it('sets loading=true during LLM call', async () => {

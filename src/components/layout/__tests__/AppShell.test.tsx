@@ -13,6 +13,7 @@ let mockSimulationState = {
   suggestions: [] as import('@/lib/types').PresetScenario[],
   clear: mockClear,
   animationPhase: 'idle' as import('@/lib/types').AnimationPhase,
+  activeScenarioId: undefined as string | undefined,
 };
 
 jest.mock('@/hooks/useSimulation', () => ({
@@ -46,6 +47,15 @@ jest.mock('@/components/simulation/ImpactReport', () => ({
   },
 }));
 
+// Mock EventFeed
+let capturedEventFeedProps: Record<string, unknown> = {};
+jest.mock('@/components/feed/EventFeed', () => ({
+  EventFeed: (props: Record<string, unknown>) => {
+    capturedEventFeedProps = props;
+    return <div data-testid="mock-event-feed" />;
+  },
+}));
+
 import { AppShell } from '../AppShell';
 import type { SimulationResult } from '@/lib/types';
 
@@ -60,6 +70,7 @@ const mockResult: SimulationResult = {
       direction: 'negative',
       impactPercent: -30,
       reason: 'Trade disruption',
+      reasonZh: '贸易中断',
     },
   ],
   cityImpacts: [],
@@ -74,6 +85,7 @@ beforeEach(() => {
   capturedFateMapProps = {};
   capturedScenarioInputProps = {};
   capturedImpactReportProps = {};
+  capturedEventFeedProps = {};
   mockSimulationState = {
     simulate: mockSimulate,
     result: null,
@@ -82,6 +94,7 @@ beforeEach(() => {
     suggestions: [],
     clear: mockClear,
     animationPhase: 'idle',
+    activeScenarioId: undefined,
   };
 });
 
@@ -112,6 +125,11 @@ describe('AppShell', () => {
     expect(screen.getByTestId('mock-scenario-input')).toBeInTheDocument();
   });
 
+  it('renders EventFeed', () => {
+    render(<AppShell />);
+    expect(screen.getByTestId('mock-event-feed')).toBeInTheDocument();
+  });
+
   // --- Wiring ---
 
   it('passes simulate to ScenarioInput.onSimulate', () => {
@@ -140,6 +158,19 @@ describe('AppShell', () => {
     mockSimulationState.animationPhase = 'ripple';
     render(<AppShell />);
     expect(capturedFateMapProps.animationPhase).toBe('ripple');
+  });
+
+  // --- EventFeed wiring ---
+
+  it('passes simulate to EventFeed.onSelectScenario', () => {
+    render(<AppShell />);
+    expect(capturedEventFeedProps.onSelectScenario).toBe(mockSimulate);
+  });
+
+  it('passes activeScenarioId to EventFeed', () => {
+    mockSimulationState.activeScenarioId = 'taiwan-strait-crisis';
+    render(<AppShell />);
+    expect(capturedEventFeedProps.activeScenarioId).toBe('taiwan-strait-crisis');
   });
 
   // --- ImpactReport ---

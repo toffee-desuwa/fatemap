@@ -207,7 +207,7 @@
       "name": "Event feed (Phase 2)",
       "description": "Left sidebar with hot events, category filters, search",
       "priority": 23,
-      "status": "backlog",
+      "status": "in-progress",
       "dependencies": ["F005", "F017"]
     },
     {

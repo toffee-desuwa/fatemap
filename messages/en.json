@@ -48,6 +48,22 @@
     "techOpenSource": "Open Source",
     "footer": "FateMap — AI Geopolitical Prediction Sandbox"
   },
+  "feed": {
+    "title": "Hot Events",
+    "search": "Search scenarios...",
+    "noResults": "No matching scenarios",
+    "category": {
+      "all": "All",
+      "military": "Military",
+      "trade": "Trade",
+      "energy": "Energy",
+      "climate": "Climate",
+      "health": "Health",
+      "political": "Political",
+      "economic": "Economic",
+      "technology": "Tech"
+    }
+  },
   "settings": {
     "title": "API Key Settings",
     "description": "Configure your LLM provider to enable custom scenario analysis. Your API key is stored locally in your browser.",

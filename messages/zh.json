@@ -48,6 +48,22 @@
     "techOpenSource": "开源",
     "footer": "FateMap — AI 地缘政治预测沙盘"
   },
+  "feed": {
+    "title": "热门事件",
+    "search": "搜索场景...",
+    "noResults": "没有匹配的场景",
+    "category": {
+      "all": "全部",
+      "military": "军事",
+      "trade": "贸易",
+      "energy": "能源",
+      "climate": "气候",
+      "health": "卫生",
+      "political": "政治",
+      "economic": "经济",
+      "technology": "科技"
+    }
+  },
   "settings": {
     "title": "API 密钥设置",
     "description": "配置您的 LLM 提供商以启用自定义场景分析。您的 API 密钥仅存储在浏览器本地。",

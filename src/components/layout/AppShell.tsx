@@ -5,10 +5,11 @@ import { useSimulation } from '@/hooks/useSimulation';
 import { FateMap } from '@/components/map/FateMap';
 import { ScenarioInput } from '@/components/simulation/ScenarioInput';
 import { ImpactReport } from '@/components/simulation/ImpactReport';
+import { EventFeed } from '@/components/feed/EventFeed';
 import { Header } from './Header';
 
 export function AppShell() {
-  const { simulate, result, loading, error, suggestions, clear, animationPhase } =
+  const { simulate, result, loading, error, suggestions, clear, animationPhase, activeScenarioId } =
     useSimulation();
   const [selectedCountryId, setSelectedCountryId] = useState<string | undefined>();
   const [showFlash, setShowFlash] = useState(false);
@@ -37,7 +38,15 @@ export function AppShell() {
     <div data-testid="app-shell" className="flex h-screen flex-col">
       <Header currentPage="dashboard" />
 
-      <div className="relative flex-1 grid grid-cols-[1fr_360px]">
+      <div className="relative flex-1 grid grid-cols-[240px_1fr_360px]">
+        {/* Left sidebar — Event Feed */}
+        <div className="border-r border-[var(--color-border)] bg-[var(--color-background)] overflow-hidden">
+          <EventFeed
+            onSelectScenario={simulate}
+            activeScenarioId={activeScenarioId}
+          />
+        </div>
+
         {/* Map area */}
         <div className="relative overflow-hidden">
           <FateMap

@@ -17,6 +17,7 @@ export function useSimulation() {
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<PresetScenario[]>([]);
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('idle');
+  const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>();
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -49,6 +50,7 @@ export function useSimulation() {
       const preset = matchScenario(input);
       if (preset) {
         setResult(preset.result);
+        setActiveScenarioId(preset.id);
         setLoading(false);
         startAnimationCycle();
         return;
@@ -76,6 +78,7 @@ export function useSimulation() {
 
         if (llmResult) {
           setResult(llmResult);
+          setActiveScenarioId(undefined);
           startAnimationCycle();
           return;
         }
@@ -97,7 +100,8 @@ export function useSimulation() {
     setError(null);
     setSuggestions([]);
     setAnimationPhase('idle');
+    setActiveScenarioId(undefined);
   }, [clearTimers]);
 
-  return { simulate, result, loading, error, suggestions, clear, animationPhase };
+  return { simulate, result, loading, error, suggestions, clear, animationPhase, activeScenarioId };
 }
