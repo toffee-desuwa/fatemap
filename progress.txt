@@ -176,3 +176,16 @@
 - Created src/components/map/__tests__/FateMap.test.tsx: 30 tests (rendering, DeckGL props, MapGL style, view state, GeoJSON fetch, TopoJSON conversion, fetch failure, layer composition idle/ripple/network phases, empty vs populated results, animation loop start/stop/cancel, RAF callback, click handling for country/city/null/missing-alpha3, tooltip city/country/unknown/null)
 - Build: clean, Lint: clean, Tests: 240 (240 passing)
 - Next action: F015 - ScenarioInput component
+
+## Session 17 (F015 - ScenarioInput component — 2026-03-21)
+- Created src/components/simulation/ScenarioInput.tsx: "What if..." input with preset examples and suggestions
+  - Textarea with placeholder, Enter to submit, Shift+Enter for newlines, 1000 char max
+  - 6 diverse example buttons (taiwan-strait, us-china-trade, hormuz, mega-typhoon, ukraine-russia, semiconductor)
+  - Example click auto-fills textarea + auto-submits (no extra click)
+  - Suggestion chips when keyword match fails (clickable, auto-fill + submit)
+  - Loading state: pulsing "Simulating..." text, textarea disabled, examples hidden
+  - Character counter bottom-right, submit button embedded in textarea
+- Added i18n keys to messages/en.json and messages/zh.json: scenario.placeholder, submit, simulating, didYouMean
+- Created src/components/simulation/__tests__/ScenarioInput.test.tsx: 24 tests (rendering, textarea, submit button, char counter, 6 examples, input behavior, char max enforcement, disabled states, submit click/Enter/Shift+Enter/trim/whitespace-only, loading state show/hide/examples/disabled, example fill+submit/value, suggestions render/empty/undefined/loading/click)
+- Build: clean, Lint: clean, Tests: 264 (264 passing)
+- Next action: F016 - ImpactReport component

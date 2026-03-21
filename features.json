@@ -135,7 +135,7 @@
       "name": "ScenarioInput component",
       "description": "\"What if...\" input box with preset example buttons",
       "priority": 15,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002"]
     },
     {
