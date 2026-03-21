@@ -175,7 +175,7 @@
       "name": "i18n messages",
       "description": "English + Chinese translation files for all UI strings",
       "priority": 19,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F017"]
     },
     {

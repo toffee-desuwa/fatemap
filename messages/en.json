@@ -7,7 +7,8 @@
     "settings": "Settings",
     "dashboard": "Dashboard",
     "aiConnected": "AI: Connected",
-    "aiPresetOnly": "AI: Preset Only"
+    "aiPresetOnly": "AI: Preset Only",
+    "loading": "Loading..."
   },
   "metadata": {
     "title": "FateMap — AI Geopolitical Prediction Sandbox",
@@ -18,5 +19,10 @@
     "submit": "Simulate",
     "simulating": "Simulating...",
     "didYouMean": "Did you mean:"
+  },
+  "report": {
+    "epicenter": "Epicenter: {flag} {name}",
+    "countryImpacts": "Country Impacts ({count})",
+    "cityImpacts": "City Impacts ({count})"
   }
 }

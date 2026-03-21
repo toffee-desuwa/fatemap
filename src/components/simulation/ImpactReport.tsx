@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useMemo } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import type { SimulationResult } from '../../lib/types';
 import { SEVERITY_BADGE, SEVERITY_HEX } from '../../lib/colors';
 import { countryFlag, countryMap, cityMap } from '../../lib/country-utils';
@@ -26,6 +27,9 @@ export function ImpactReport({
   onCountryClick,
   onClear,
 }: ImpactReportProps) {
+  const t = useTranslations('report');
+  const locale = useLocale();
+  const isZh = locale === 'zh';
   const rowRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   const sortedCountryImpacts = useMemo(
@@ -78,15 +82,17 @@ export function ImpactReport({
             data-testid="epicenter"
             className="text-xs text-[var(--color-text-secondary)]"
           >
-            Epicenter: {countryFlag(epicenterCountry.id)}{' '}
-            {epicenterCountry.name}
+            {t('epicenter', {
+              flag: countryFlag(epicenterCountry.id),
+              name: isZh ? epicenterCountry.nameCn : epicenterCountry.name,
+            })}
           </span>
         )}
         <p
           data-testid="summary"
           className="text-xs text-[var(--color-text-secondary)] leading-relaxed"
         >
-          {result.summary}
+          {isZh ? result.summaryZh : result.summary}
         </p>
       </div>
 
@@ -96,7 +102,7 @@ export function ImpactReport({
           data-testid="country-heading"
           className="text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider"
         >
-          Country Impacts ({sortedCountryImpacts.length})
+          {t('countryImpacts', { count: sortedCountryImpacts.length })}
         </h4>
         <div className="flex flex-col gap-0.5">
           {sortedCountryImpacts.map((impact, i) => {
@@ -128,7 +134,7 @@ export function ImpactReport({
                   {countryFlag(impact.countryId)}
                 </span>
                 <span className="flex-1 min-w-0 truncate text-[var(--color-foreground)]">
-                  {country.name}
+                  {isZh ? country.nameCn : country.name}
                 </span>
                 <span
                   data-testid={`severity-${impact.countryId}`}
@@ -167,7 +173,7 @@ export function ImpactReport({
               data-testid="selected-reason"
               className="rounded-md bg-[var(--color-surface)] p-2 text-xs text-[var(--color-text-secondary)] leading-relaxed"
             >
-              {impact.reason}
+              {isZh ? impact.reasonZh : impact.reason}
             </div>
           );
         })()}
@@ -179,7 +185,7 @@ export function ImpactReport({
             data-testid="city-heading"
             className="text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider"
           >
-            City Impacts ({result.cityImpacts.length})
+            {t('cityImpacts', { count: result.cityImpacts.length })}
           </h4>
           <div className="flex flex-col gap-0.5">
             {result.cityImpacts.map((impact, i) => {
@@ -198,7 +204,7 @@ export function ImpactReport({
                     {countryFlag(city.countryId)}
                   </span>
                   <span className="flex-1 min-w-0 truncate text-[var(--color-foreground)]">
-                    {city.name}
+                    {isZh ? city.nameCn : city.name}
                   </span>
                   <span
                     data-testid={`city-severity-${impact.cityId}`}

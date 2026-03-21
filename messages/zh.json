@@ -7,7 +7,8 @@
     "settings": "设置",
     "dashboard": "仪表盘",
     "aiConnected": "AI: 已连接",
-    "aiPresetOnly": "AI: 仅预设"
+    "aiPresetOnly": "AI: 仅预设",
+    "loading": "加载中..."
   },
   "metadata": {
     "title": "FateMap — AI 地缘政治预测沙盘",
@@ -18,5 +19,10 @@
     "submit": "模拟",
     "simulating": "模拟中...",
     "didYouMean": "你是否想说："
+  },
+  "report": {
+    "epicenter": "震中：{flag} {name}",
+    "countryImpacts": "国家影响 ({count})",
+    "cityImpacts": "城市影响 ({count})"
   }
 }

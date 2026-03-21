@@ -251,3 +251,13 @@
 - Routes generated: /en/dashboard, /zh/dashboard (SSG)
 - Build: clean, Lint: clean, Tests: 346 (346 passing, +6 new)
 - Next action: F019 - i18n messages
+
+## Session 22 (F019 - i18n messages — 2026-03-21)
+- Updated messages/en.json: added report namespace (epicenter, countryImpacts, cityImpacts with interpolation), common.loading
+- Updated messages/zh.json: matching Chinese translations for all new keys
+- Wired ImpactReport.tsx: useTranslations('report') for headings/labels, useLocale for bilingual data fields (summary/summaryZh, reason/reasonZh, name/nameCn)
+- Wired ScenarioInput.tsx: useLocale for locale-aware scenario names (name/nameCn) in example buttons and suggestion chips
+- Created src/lib/__tests__/i18n-messages.test.ts: 7 tests (key count, en/zh parity, non-empty values, namespaces, interpolation placeholders)
+- Header.tsx and ScenarioInput.tsx already used useTranslations from prior sessions
+- Build: clean, Lint: clean, Tests: 353 (353 passing, +7 new)
+- Next action: F020 - Settings page (BYOK)

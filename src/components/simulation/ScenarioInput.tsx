@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import type { PresetScenario } from '../../lib/types';
 import { SCENARIOS } from '../../lib/scenarios';
 
@@ -33,6 +33,8 @@ export function ScenarioInput({
   suggestions,
 }: ScenarioInputProps) {
   const t = useTranslations('scenario');
+  const locale = useLocale();
+  const isZh = locale === 'zh';
   const [input, setInput] = useState('');
 
   const handleSubmit = useCallback(() => {
@@ -109,7 +111,7 @@ export function ScenarioInput({
                 onClick={() => handleScenarioSelect(s)}
                 className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 text-xs text-[var(--color-foreground)] transition-colors hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-hover)]"
               >
-                {s.name}
+                {isZh ? s.nameCn : s.name}
               </button>
             ))}
           </div>
@@ -125,7 +127,7 @@ export function ScenarioInput({
               onClick={() => handleScenarioSelect(scenario)}
               className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2.5 py-1 text-xs text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-primary-light)] hover:text-[var(--color-foreground)]"
             >
-              {scenario.name}
+              {isZh ? scenario.nameCn : scenario.name}
             </button>
           ))}
         </div>
