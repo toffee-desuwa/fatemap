@@ -41,8 +41,8 @@ const HERO_SCENARIO_IDS = [
 ] as const;
 
 const HERO_SCENARIOS = HERO_SCENARIO_IDS.map(
-  (id) => SCENARIOS.find((s) => s.id === id)!,
-);
+  (id) => SCENARIOS.find((s) => s.id === id),
+).filter((s): s is (typeof SCENARIOS)[number] => s !== undefined);
 
 /** Cycle interval in ms */
 const CYCLE_INTERVAL = 10_000;
