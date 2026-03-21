@@ -102,6 +102,7 @@ export interface LlmProvider {
   name: string;
   baseUrl: string;
   model: string;
+  format: 'openai' | 'anthropic';
   buildHeaders: (apiKey: string) => Record<string, string>;
 }
 
