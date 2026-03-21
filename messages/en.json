@@ -9,5 +9,11 @@
   "metadata": {
     "title": "FateMap — AI Geopolitical Prediction Sandbox",
     "description": "Input any event. Watch the world react."
+  },
+  "scenario": {
+    "placeholder": "What if...?",
+    "submit": "Simulate",
+    "simulating": "Simulating...",
+    "didYouMean": "Did you mean:"
   }
 }

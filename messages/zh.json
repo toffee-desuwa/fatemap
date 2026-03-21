@@ -9,5 +9,11 @@
   "metadata": {
     "title": "FateMap — AI 地缘政治预测沙盘",
     "description": "输入任意事件，观察世界反应。"
+  },
+  "scenario": {
+    "placeholder": "如果...会怎样？",
+    "submit": "模拟",
+    "simulating": "模拟中...",
+    "didYouMean": "你是否想说："
   }
 }
