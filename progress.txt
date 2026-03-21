@@ -261,3 +261,20 @@
 - Header.tsx and ScenarioInput.tsx already used useTranslations from prior sessions
 - Build: clean, Lint: clean, Tests: 353 (353 passing, +7 new)
 - Next action: F020 - Settings page (BYOK)
+
+## Session 23 (F020 - Settings page (BYOK) — 2026-03-21)
+- Created src/components/settings/ApiKeySettings.tsx: BYOK settings component
+  - Provider dropdown (DeepSeek, Gemini, OpenAI, Anthropic) with model info
+  - Password input for API key, loads saved values from localStorage on mount
+  - Save button stores provider+key to localStorage, dispatches storage event for Header sync
+  - Test button sends minimal "Say ok" prompt to validate key (OpenAI/Anthropic format aware)
+  - Clear button removes localStorage entries and resets form
+  - Status messages: saved/cleared/test-success/test-failed with auto-reset on input change
+  - Provider info panel shows model name and endpoint
+- Created src/app/[locale]/settings/page.tsx: server component with setRequestLocale
+- Created src/app/[locale]/settings/SettingsClient.tsx: client component wrapping Header + ApiKeySettings
+- Added settings namespace to en.json and zh.json (13 keys: title, description, provider, apiKey, save, test, etc.)
+- Step 3 (Wire LLM status to Header) already done in F017
+- Created tests: ApiKeySettings (27 tests), SettingsClient (3 tests), page (2 tests)
+- Build: clean, Lint: clean, Tests: 385 (385 passing, +32 new)
+- Next action: F021 - Landing page
