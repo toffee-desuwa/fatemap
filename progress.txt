@@ -240,3 +240,14 @@
 - Created src/lib/__tests__/colors.test.ts: 5 tests (hex derivation, RGB match, badge classes, hex in badges, text colors)
 - Build: clean, Lint: clean, Tests: 340 (340 passing, +10 new)
 - Next action: F018 - Dashboard page
+
+## Session 21 (F018 - Dashboard page — 2026-03-21)
+- Created src/app/[locale]/dashboard/page.tsx: server component with setRequestLocale
+- Created src/app/[locale]/dashboard/DashboardClient.tsx: client component with dynamic import (ssr:false) for AppShell
+  - Split required because Next.js 15 disallows ssr:false in server components
+  - Loading fallback shows "Loading..." during deck.gl hydration
+- Created src/app/[locale]/dashboard/__tests__/page.test.tsx: 2 tests (render, zh locale)
+- Created src/app/[locale]/dashboard/__tests__/DashboardClient.test.tsx: 4 tests (render, ssr disabled, loading content, loading testid)
+- Routes generated: /en/dashboard, /zh/dashboard (SSG)
+- Build: clean, Lint: clean, Tests: 346 (346 passing, +6 new)
+- Next action: F019 - i18n messages

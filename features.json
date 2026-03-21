@@ -167,7 +167,7 @@
       "name": "Dashboard page",
       "description": "Wire AppShell into /[locale]/dashboard route",
       "priority": 18,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F017"]
     },
     {
