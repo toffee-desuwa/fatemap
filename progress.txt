@@ -104,3 +104,16 @@
 - Created src/hooks/__tests__/useSimulation.test.ts: 10 tests (idle state, keyword match, no-match suggestions, LLM call, LLM error, animation phases, clear reset, loading state, empty input, timer cleanup on re-simulate)
 - Build: clean, Lint: clean, Tests: 89 (89 passing)
 - Next action: F010 - Network glow lines
+
+## Session 11 (F010 - Network glow lines — 2026-03-21)
+- Created src/lib/network-glow.ts: createNetworkGlowLayers() + getNetworkPulseMultiplier()
+  - 3-layer glow stack (outer/mid/core) adapted from FreightSeer's glow-layers.ts
+  - Color by highest-severity country in each relationship (critical→red, high→orange, etc.)
+  - Width proportional to relationship strength (1-5 scale, multipliers 1x-3x)
+  - Pulse animation (0.7-1.0 sine oscillation) only on critical severity lines
+  - States: idle/ripple=dim, network/persistent=activated glow or dimmed
+  - ~~Antimeridian skip~~ → removed, country centers don't cause visual wrapping on Mercator
+  - Takes countryImpacts alongside activatedIds for severity color resolution
+- Created src/lib/__tests__/network-glow.test.ts: 29 tests (3 layers, correct IDs, pickability, pixel units, idle/ripple/network/persistent phases, severity color mapping, higher-severity picking, unaffected color, strength-based width, layer width ordering, pulse range/peak/trough, pulse on critical only, config structure, empty inputs, unknown countries, updateTriggers)
+- Build: clean, Lint: clean, Tests: 118 (118 passing)
+- Next action: F011 - Country fill layer

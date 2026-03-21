@@ -87,7 +87,7 @@
       "name": "Network glow lines",
       "description": "PathLayer 3-layer glow stack for relationship network",
       "priority": 10,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002", "F004"]
     },
     {
