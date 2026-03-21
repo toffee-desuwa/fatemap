@@ -40,3 +40,10 @@
 - Created src/lib/__tests__/cities.test.ts: 9 tests (count, unique IDs, kebab-case IDs, names, coordinates, countryId referential integrity, type enum, importance range)
 - Build: clean, Lint: clean, Tests: 17 (17 passing)
 - Next action: F004 - Relationships data
+
+## Session 4 (F004 - Relationships data — 2026-03-21)
+- Created src/lib/relationships.ts: 142 bilateral relationships with helper function r() for auto-ID generation
+- Distribution: trade (30), military_alliance (25), energy_dependency (22), supply_chain (25), political (20), geographic_proximity (20)
+- Created src/lib/__tests__/relationships.test.ts: 9 tests (count, unique IDs, ID format, valid from/to, no self-references, valid types, strength range, all types covered, no duplicates)
+- Build: clean, Lint: clean, Tests: 26 (26 passing)
+- Next action: F005 - Preset scenarios

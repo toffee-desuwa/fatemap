@@ -31,7 +31,7 @@
       "name": "Relationships data",
       "description": "142 bilateral relationships with tests",
       "priority": 4,
-      "status": "backlog",
+      "status": "done",
       "dependencies": ["F002"]
     },
     {
