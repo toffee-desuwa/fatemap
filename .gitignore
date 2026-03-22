@@ -14,3 +14,7 @@ prediction-engine/__pycache__/
 *.pyc
 .DS_Store
 tsconfig.tsbuildinfo
+features.json
+progress.txt
+init.sh
+SESSION_CONTEXT.md

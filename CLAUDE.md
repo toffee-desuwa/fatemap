@@ -49,10 +49,7 @@ fatemap/
 │   └── middleware.ts
 ├── messages/             # en.json, zh.json
 ├── public/geo/           # countries-110m.json (GeoJSON)
-├── docs/superpowers/     # Specs and plans
-├── features.json         # Feature tracking (harness - DO NOT DELETE)
-├── progress.txt          # Session progress log (harness - DO NOT DELETE)
-└── init.sh               # Environment init script (harness - DO NOT DELETE)
+└── docs/superpowers/     # Specs and plans
 ```
 
 ## Commands
@@ -73,23 +70,6 @@ npm run lint
 # Build
 npm run build
 ```
-
-## Harness Files (DO NOT DELETE OR MODIFY STRUCTURE)
-
-- `features.json` - Tracks all features and their completion status. Agent must update status after completing each feature. NEVER remove entries.
-- `progress.txt` - Append-only log of what each session accomplished. Write a summary at the end of each session.
-- `init.sh` - Run at the start of each session to verify environment.
-
-## Session Protocol
-
-Each Ralph loop is a FRESH session. At the start of every session:
-1. Run `bash init.sh` to verify environment
-2. Read `progress.txt` to understand what previous sessions did
-3. Read `features.json` to find the highest-priority incomplete feature
-4. Work on ONE feature per session
-5. Commit with descriptive message
-6. Update `features.json` status
-7. Append to `progress.txt` what you accomplished
 
 ## Key Design Decisions
 
