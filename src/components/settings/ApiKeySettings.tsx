@@ -77,15 +77,27 @@ export function ApiKeySettings() {
       if (response.ok) {
         setStatus('test-success');
       } else {
-        const text = await response.text().catch(() => response.statusText);
         setStatus('test-failed');
-        setErrorMsg(`${response.status} ${text.slice(0, 100)}`);
+        const status = response.status;
+        if (status === 401) {
+          setErrorMsg(t('errorAuth'));
+        } else if (status === 403) {
+          setErrorMsg(t('errorForbidden'));
+        } else if (status === 429) {
+          setErrorMsg(t('errorRateLimit'));
+        } else if (status === 404) {
+          setErrorMsg(t('errorNotFound'));
+        } else if (status >= 500) {
+          setErrorMsg(t('errorServer'));
+        } else {
+          setErrorMsg(t('errorHttp', { status: String(status) }));
+        }
       }
-    } catch (err) {
+    } catch {
       setStatus('test-failed');
-      setErrorMsg(err instanceof Error ? err.message : String(err));
+      setErrorMsg(t('errorNetwork'));
     }
-  }, [providerId, apiKey]);
+  }, [providerId, apiKey, t]);
 
   const selectedProvider = getProvider(providerId);
 
@@ -200,8 +212,8 @@ export function ApiKeySettings() {
           data-testid="provider-info"
           className="rounded border border-[var(--color-border)] bg-[var(--color-surface)] p-3 text-xs text-[var(--color-text-secondary)]"
         >
-          <div>Model: {selectedProvider.model}</div>
-          <div>Endpoint: {selectedProvider.baseUrl}</div>
+          <div>{t('model')}: {selectedProvider.model}</div>
+          <div>{t('endpoint')}: {selectedProvider.baseUrl}</div>
         </div>
       )}
     </div>

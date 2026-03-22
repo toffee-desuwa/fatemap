@@ -66,7 +66,7 @@ const fakeScenario: PresetScenario = {
   category: 'military',
   description: 'A military conflict in the Taiwan Strait',
   descriptionZh: '台湾海峡军事冲突',
-  eventText: 'What if China invades Taiwan?',
+  eventText: 'What if Mainland China initiates a military blockade of Taiwan?',
   keywords: ['Taiwan', 'Strait', 'military', 'conflict', '台湾', '海峡'],
   result: fakeResult,
 };
@@ -284,6 +284,128 @@ describe('useSimulation', () => {
     expect(result.current.result).toBeNull();
     expect(result.current.loading).toBe(false);
     expect(mockMatchScenario).not.toHaveBeenCalled();
+  });
+
+  it('aborts previous LLM request when simulate is called again rapidly', async () => {
+    mockMatchScenario.mockReturnValue(null);
+    localStorage.setItem('fatemap-llm-provider', 'deepseek');
+    localStorage.setItem('fatemap-llm-apikey', 'sk-test-key');
+
+    // Track all signals passed to analyzeWithLlm
+    const signals: (AbortSignal | undefined)[] = [];
+    let resolveFirst: (v: { result: SimulationResult | null }) => void;
+    let resolveSecond: (v: { result: SimulationResult }) => void;
+
+    mockAnalyzeWithLlm
+      .mockImplementationOnce(
+        (
+          _input: string,
+          _provider: unknown,
+          _key: string,
+          signal?: AbortSignal,
+        ) => {
+          signals.push(signal);
+          return new Promise((resolve) => {
+            resolveFirst = resolve;
+          });
+        },
+      )
+      .mockImplementationOnce(
+        (
+          _input: string,
+          _provider: unknown,
+          _key: string,
+          signal?: AbortSignal,
+        ) => {
+          signals.push(signal);
+          return new Promise((resolve) => {
+            resolveSecond = resolve;
+          });
+        },
+      );
+
+    const { result } = renderHook(() => useSimulation());
+
+    // Fire first simulation (don't await — it's in-flight)
+    let firstPromise: Promise<void>;
+    act(() => {
+      firstPromise = result.current.simulate('scenario A');
+    });
+
+    // Fire second simulation immediately — should abort the first
+    let secondPromise: Promise<void>;
+    act(() => {
+      secondPromise = result.current.simulate('scenario B');
+    });
+
+    expect(mockAnalyzeWithLlm).toHaveBeenCalledTimes(2);
+    // The first request's signal should now be aborted
+    expect(signals[0]?.aborted).toBe(true);
+    // The second request's signal should still be active
+    expect(signals[1]?.aborted).toBe(false);
+
+    // Resolve both to clean up
+    await act(async () => {
+      resolveFirst!({ result: null });
+      resolveSecond!({ result: fakeResult });
+      await firstPromise!;
+      await secondPromise!;
+    });
+
+    // Only the second result should be set
+    expect(result.current.result).toEqual(fakeResult);
+  });
+
+  it('silently ignores AbortError without setting error state', async () => {
+    mockMatchScenario.mockReturnValue(null);
+    localStorage.setItem('fatemap-llm-provider', 'deepseek');
+    localStorage.setItem('fatemap-llm-apikey', 'sk-test-key');
+
+    // First call rejects with AbortError
+    mockAnalyzeWithLlm.mockImplementationOnce(() => {
+      const err = new DOMException('The operation was aborted.', 'AbortError');
+      return Promise.reject(err);
+    });
+
+    // Second call succeeds
+    mockAnalyzeWithLlm.mockResolvedValueOnce({ result: fakeResult });
+
+    const { result } = renderHook(() => useSimulation());
+
+    // Fire simulation that will be aborted
+    await act(async () => {
+      await result.current.simulate('scenario A');
+    });
+
+    // Error should NOT be set — AbortError is silently ignored
+    expect(result.current.error).toBeNull();
+    // Result should be null since the aborted call returned early
+    // and didn't fall through to suggestions (the `return` in catch)
+    expect(result.current.result).toBeNull();
+  });
+
+  it('sets error state on non-AbortError exception during LLM call', async () => {
+    mockMatchScenario.mockReturnValue(null);
+    mockFindClosest.mockReturnValue(fakeSuggestions);
+    localStorage.setItem('fatemap-llm-provider', 'deepseek');
+    localStorage.setItem('fatemap-llm-apikey', 'sk-test-key');
+
+    const fetchError = new TypeError('Failed to fetch');
+    mockAnalyzeWithLlm.mockReset();
+    mockAnalyzeWithLlm.mockImplementation(() => Promise.reject(fetchError));
+
+    const { result } = renderHook(() => useSimulation());
+
+    await act(async () => {
+      await result.current.simulate('some scenario');
+    });
+
+    // Verify the mock was actually called
+    expect(mockAnalyzeWithLlm).toHaveBeenCalledTimes(1);
+    expect(result.current.error).toBe('Failed to fetch');
+    expect(result.current.loading).toBe(false);
+    expect(result.current.result).toBeNull();
+    expect(result.current.suggestions).toHaveLength(3);
   });
 
   it('clears previous timers when simulating again', async () => {

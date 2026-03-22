@@ -22,7 +22,7 @@
   },
   "report": {
     "epicenter": "Epicenter: {flag} {name}",
-    "countryImpacts": "Country Impacts ({count})",
+    "countryImpacts": "Country & Region Impacts ({count})",
     "cityImpacts": "City Impacts ({count})"
   },
   "landing": {
@@ -37,7 +37,7 @@
     "feature3Title": "Real-Time Visualization",
     "feature3Desc": "Shockwave ripples, network glow lines, country fills, and city markers animate global impact.",
     "feature4Title": "142 Relationships",
-    "feature4Desc": "Trade, military, energy, supply chain, political, and geographic relationships between 48 countries.",
+    "feature4Desc": "Trade, military, energy, supply chain, political, and geographic relationships between 48 countries and regions.",
     "feature5Title": "Bilingual Interface",
     "feature5Desc": "Full English and Chinese support for all scenarios, impacts, and UI elements.",
     "feature6Title": "Open Source",
@@ -76,6 +76,15 @@
     "saved": "Settings saved",
     "testSuccess": "Connection successful!",
     "testFailed": "Connection failed: {error}",
+    "errorAuth": "Authentication failed — check your API key",
+    "errorForbidden": "Access denied — your key may lack permissions",
+    "errorRateLimit": "Rate limited — try again later",
+    "errorNotFound": "Endpoint not found — check provider settings",
+    "errorServer": "Provider server error — try again later",
+    "errorHttp": "Request failed (HTTP {status})",
+    "errorNetwork": "Network error — check your connection",
+    "model": "Model",
+    "endpoint": "Endpoint",
     "clear": "Clear",
     "cleared": "Settings cleared"
   }

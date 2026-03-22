@@ -6,9 +6,10 @@
  * no click handlers, no tooltips, controller disabled.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { Map as MapGL } from 'react-map-gl/maplibre';
+import type { Layer } from '@deck.gl/core';
 import type { FeatureCollection } from 'geojson';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -27,10 +28,12 @@ const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.j
 
 const INITIAL_VIEW_STATE = {
   longitude: 20,
-  latitude: 20,
+  latitude: 15,
   zoom: 1.5,
   pitch: 0,
   bearing: 0,
+  minZoom: 0.8,
+  maxZoom: 6,
 };
 
 /** 3 visually diverse scenarios for the hero cycling */
@@ -43,6 +46,9 @@ const HERO_SCENARIO_IDS = [
 const HERO_SCENARIOS = HERO_SCENARIO_IDS.map(
   (id) => SCENARIOS.find((s) => s.id === id),
 ).filter((s): s is (typeof SCENARIOS)[number] => s !== undefined);
+
+/** Subtle bearing offsets per scenario for camera drift effect */
+const BEARING_OFFSETS = [-5, 0, 5];
 
 /** Cycle interval in ms */
 const CYCLE_INTERVAL = 10_000;
@@ -60,11 +66,31 @@ export function FateHeroMap() {
   const [animationTime, setAnimationTime] = useState(0);
   const rafRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
-  const cycleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const phaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cycleTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** Track ALL pending timeouts so clearTimers() can cancel every one */
+  const pendingTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const mapLoadedRef = useRef(false);
 
+  /** Schedule a timeout and track it for cleanup */
+  const safeTimeout = useCallback((fn: () => void, delay: number) => {
+    const id = setTimeout(() => {
+      pendingTimersRef.current.delete(id);
+      fn();
+    }, delay);
+    pendingTimersRef.current.add(id);
+    return id;
+  }, []);
+
   const currentResult: SimulationResult = HERO_SCENARIOS[scenarioIndex].result;
+
+  /** View state with subtle bearing drift per scenario */
+  const viewState = useMemo(
+    () => ({
+      ...INITIAL_VIEW_STATE,
+      bearing: BEARING_OFFSETS[scenarioIndex % BEARING_OFFSETS.length],
+    }),
+    [scenarioIndex],
+  );
 
   // Fetch TopoJSON on mount
   useEffect(() => {
@@ -86,19 +112,23 @@ export function FateHeroMap() {
   const startScenario = useCallback(() => {
     setAnimationPhase('ripple');
 
-    phaseTimerRef.current = setTimeout(() => {
+    safeTimeout(() => {
       setAnimationPhase('network');
 
-      phaseTimerRef.current = setTimeout(() => {
+      safeTimeout(() => {
         setAnimationPhase('persistent');
       }, NETWORK_DURATION);
     }, RIPPLE_DURATION);
-  }, []);
+  }, [safeTimeout]);
 
   /** Clear all timers */
   const clearTimers = useCallback(() => {
-    if (cycleTimerRef.current) clearTimeout(cycleTimerRef.current);
-    if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+    if (cycleTimerRef.current) {
+      clearInterval(cycleTimerRef.current);
+      cycleTimerRef.current = null;
+    }
+    pendingTimersRef.current.forEach((id) => clearTimeout(id));
+    pendingTimersRef.current.clear();
     cancelAnimationFrame(rafRef.current);
   }, []);
 
@@ -110,7 +140,7 @@ export function FateHeroMap() {
     }
 
     // Start first scenario after delay
-    const startTimer = setTimeout(() => {
+    safeTimeout(() => {
       startScenario();
     }, START_DELAY);
 
@@ -119,18 +149,17 @@ export function FateHeroMap() {
       setAnimationPhase('idle');
       setAnimationTime(0);
 
-      // Brief idle gap, then next scenario
-      setTimeout(() => {
+      // Brief idle gap, then next scenario (tracked by safeTimeout)
+      safeTimeout(() => {
         setScenarioIndex((prev) => (prev + 1) % HERO_SCENARIOS.length);
         startScenario();
       }, 200);
     }, CYCLE_INTERVAL);
 
     return () => {
-      clearTimeout(startTimer);
       clearTimers();
     };
-  }, [startScenario, clearTimers]);
+  }, [startScenario, clearTimers, safeTimeout]);
 
   // Animation loop
   useEffect(() => {
@@ -154,46 +183,50 @@ export function FateHeroMap() {
     };
   }, [animationPhase]);
 
-  // Build layers
-  const layers = [];
+  // Build layers (memoized to avoid rebuilding on every render)
+  const layers = useMemo(() => {
+    const layerArray: Layer[] = [];
 
-  if (geojson) {
-    layers.push(
-      createCountryFillLayer({
-        geojson,
+    if (geojson) {
+      layerArray.push(
+        createCountryFillLayer({
+          geojson,
+          countryImpacts: currentResult.countryImpacts,
+          animationPhase,
+        }),
+      );
+    }
+
+    layerArray.push(
+      ...createNetworkGlowLayers({
+        relationships: RELATIONSHIPS,
+        countries: COUNTRIES,
         countryImpacts: currentResult.countryImpacts,
+        activatedIds: currentResult.activatedRelationships,
+        animationPhase,
+        pulseTime: animationTime,
+      }),
+    );
+
+    layerArray.push(
+      ...createCityMarkerLayers({
+        cities: CITIES,
+        cityImpacts: currentResult.cityImpacts,
+        animationTime,
         animationPhase,
       }),
     );
-  }
 
-  layers.push(
-    ...createNetworkGlowLayers({
-      relationships: RELATIONSHIPS,
-      countries: COUNTRIES,
-      countryImpacts: currentResult.countryImpacts,
-      activatedIds: currentResult.activatedRelationships,
-      animationPhase,
-      pulseTime: animationTime,
-    }),
-  );
+    layerArray.push(
+      ...createShockwaveLayers({
+        epicenter: currentResult.epicenter.coordinates,
+        animationTime,
+        animationPhase,
+      }),
+    );
 
-  layers.push(
-    ...createCityMarkerLayers({
-      cities: CITIES,
-      cityImpacts: currentResult.cityImpacts,
-      animationTime,
-      animationPhase,
-    }),
-  );
-
-  layers.push(
-    ...createShockwaveLayers({
-      epicenter: currentResult.epicenter.coordinates,
-      animationTime,
-      animationPhase,
-    }),
-  );
+    return layerArray;
+  }, [geojson, currentResult, animationPhase, animationTime]);
 
   const handleMapLoad = useCallback(() => {
     mapLoadedRef.current = true;
@@ -207,7 +240,7 @@ export function FateHeroMap() {
       data-testid="fate-hero-map"
     >
       <DeckGL
-        initialViewState={INITIAL_VIEW_STATE}
+        initialViewState={viewState}
         controller={false}
         layers={layers}
       >

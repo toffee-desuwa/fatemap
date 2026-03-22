@@ -29,40 +29,40 @@ jest.mock('react-map-gl/maplibre', () => ({
 
 jest.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
 
-const mockCreateCountryFillLayer = jest.fn(() => ({
+const mockCreateCountryFillLayer = jest.fn((_opts: Record<string, unknown>) => ({
   id: 'country-fill',
   _type: 'GeoJsonLayer',
 }));
-const mockConvertTopoJson = jest.fn(() => ({
+const mockConvertTopoJson = jest.fn((_topo: unknown) => ({
   type: 'FeatureCollection' as const,
   features: [],
 }));
 
 jest.mock('@/lib/country-regions', () => ({
-  convertTopoJson: (...args: unknown[]) => mockConvertTopoJson(...args),
-  createCountryFillLayer: (...args: unknown[]) => mockCreateCountryFillLayer(...args),
+  convertTopoJson: (arg: unknown) => mockConvertTopoJson(arg),
+  createCountryFillLayer: (arg: Record<string, unknown>) => mockCreateCountryFillLayer(arg),
 }));
 
-const mockCreateNetworkGlowLayers = jest.fn(() => [
+const mockCreateNetworkGlowLayers = jest.fn((_opts: Record<string, unknown>) => [
   { id: 'network-glow-outer' },
   { id: 'network-glow-mid' },
   { id: 'network-glow-core' },
 ]);
 
 jest.mock('@/lib/network-glow', () => ({
-  createNetworkGlowLayers: (...args: unknown[]) => mockCreateNetworkGlowLayers(...args),
+  createNetworkGlowLayers: (arg: Record<string, unknown>) => mockCreateNetworkGlowLayers(arg),
 }));
 
-const mockCreateCityMarkerLayers = jest.fn(() => [
+const mockCreateCityMarkerLayers = jest.fn((_opts: Record<string, unknown>) => [
   { id: 'city-marker-halo' },
   { id: 'city-marker-dot' },
 ]);
 
 jest.mock('@/lib/city-markers', () => ({
-  createCityMarkerLayers: (...args: unknown[]) => mockCreateCityMarkerLayers(...args),
+  createCityMarkerLayers: (arg: Record<string, unknown>) => mockCreateCityMarkerLayers(arg),
 }));
 
-const mockCreateShockwaveLayers = jest.fn(() => [
+const mockCreateShockwaveLayers = jest.fn((_opts: Record<string, unknown>) => [
   { id: 'shockwave-ring-0' },
   { id: 'shockwave-ring-1' },
   { id: 'shockwave-ring-2' },
@@ -70,7 +70,7 @@ const mockCreateShockwaveLayers = jest.fn(() => [
 ]);
 
 jest.mock('@/lib/impact-wave', () => ({
-  createShockwaveLayers: (...args: unknown[]) => mockCreateShockwaveLayers(...args),
+  createShockwaveLayers: (arg: Record<string, unknown>) => mockCreateShockwaveLayers(arg),
 }));
 
 // Mock fetch for GeoJSON
@@ -154,7 +154,7 @@ describe('FateHeroMap', () => {
     });
     const viewState = capturedDeckProps.initialViewState as Record<string, number>;
     expect(viewState.longitude).toBe(20);
-    expect(viewState.latitude).toBe(20);
+    expect(viewState.latitude).toBe(15);
     expect(viewState.zoom).toBe(1.5);
   });
 

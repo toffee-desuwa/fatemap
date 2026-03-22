@@ -65,7 +65,7 @@ describe('ImpactReport', () => {
 
   it('renders country heading with count', () => {
     render(<ImpactReport {...defaultProps} />);
-    expect(screen.getByTestId('country-heading')).toHaveTextContent('Country Impacts (5)');
+    expect(screen.getByTestId('country-heading')).toHaveTextContent('Country & Region Impacts (5)');
   });
 
   it('renders all country rows', () => {
@@ -122,11 +122,21 @@ describe('ImpactReport', () => {
     expect(onCountryClick).toHaveBeenCalledWith('USA');
   });
 
-  it('calls onCountryClick on Enter keydown', () => {
+  it('renders country rows as <button> elements for keyboard accessibility', () => {
     const onCountryClick = jest.fn();
     render(<ImpactReport {...defaultProps} onCountryClick={onCountryClick} />);
-    fireEvent.keyDown(screen.getByTestId('country-row-JPN'), { key: 'Enter' });
+    const row = screen.getByTestId('country-row-JPN');
+    expect(row.tagName).toBe('BUTTON');
+    expect(row).toHaveAttribute('type', 'button');
+    // Native <button> handles Enter/Space→click in browsers; verify click works
+    fireEvent.click(row);
     expect(onCountryClick).toHaveBeenCalledWith('JPN');
+  });
+
+  it('has aria-label on country rows', () => {
+    render(<ImpactReport {...defaultProps} />);
+    const row = screen.getByTestId('country-row-USA');
+    expect(row).toHaveAttribute('aria-label', 'Select United States');
   });
 
   it('does not crash when onCountryClick is not provided', () => {
@@ -255,7 +265,7 @@ describe('ImpactReport', () => {
 
   it('handles empty country impacts', () => {
     render(<ImpactReport result={makeResult({ countryImpacts: [] })} />);
-    expect(screen.getByTestId('country-heading')).toHaveTextContent('Country Impacts (0)');
+    expect(screen.getByTestId('country-heading')).toHaveTextContent('Country & Region Impacts (0)');
   });
 
   // --- countryFlag utility ---

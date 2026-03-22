@@ -13,6 +13,26 @@ jest.mock('@deck.gl/layers', () => ({
   GeoJsonLayer: jest.fn().mockImplementation((props) => ({ props })),
 }));
 
+/**
+ * The GeoJsonLayer mock replaces real layers with { props: Record<string, any> }.
+ * This interface describes the shape of the mocked props we inspect in tests.
+ */
+interface MockGeoJsonLayerProps {
+  id: string;
+  data: FeatureCollection;
+  filled: boolean;
+  stroked: boolean;
+  pickable: boolean;
+  getFillColor: (f: Feature) => number[];
+  getLineColor: number[];
+  updateTriggers: Record<string, unknown>;
+}
+
+/** Extract typed mock props from layer created with mocked GeoJsonLayer constructor. */
+function mockProps(layer: unknown): MockGeoJsonLayerProps {
+  return (layer as { props: MockGeoJsonLayerProps }).props;
+}
+
 // ── Helpers ──────────────────────────────────────────────────────
 
 function makeFeature(alpha3: string | null): Feature<Polygon> {
@@ -124,30 +144,30 @@ describe('convertTopoJson', () => {
 describe('createCountryFillLayer', () => {
   it('returns a layer with id "country-fill"', () => {
     const layer = createCountryFillLayer(baseOptions);
-    expect(layer.props.id).toBe('country-fill');
+    expect(mockProps(layer).id).toBe('country-fill');
   });
 
   it('layer is filled and stroked', () => {
     const layer = createCountryFillLayer(baseOptions);
-    expect(layer.props.filled).toBe(true);
-    expect(layer.props.stroked).toBe(true);
+    expect(mockProps(layer).filled).toBe(true);
+    expect(mockProps(layer).stroked).toBe(true);
   });
 
   it('layer is pickable', () => {
     const layer = createCountryFillLayer(baseOptions);
-    expect(layer.props.pickable).toBe(true);
+    expect(mockProps(layer).pickable).toBe(true);
   });
 
   it('passes geojson as data', () => {
     const layer = createCountryFillLayer(baseOptions);
-    expect(layer.props.data).toBe(geojson);
+    expect(mockProps(layer).data).toBe(geojson);
   });
 
   // ── Phase behavior ──
 
   it('idle phase: all countries transparent', () => {
     const layer = createCountryFillLayer({ ...baseOptions, animationPhase: 'idle' });
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     for (const f of geojson.features) {
       expect(getFillColor(f)).toEqual([0, 0, 0, 0]);
@@ -156,7 +176,7 @@ describe('createCountryFillLayer', () => {
 
   it('ripple phase: affected countries have fill', () => {
     const layer = createCountryFillLayer({ ...baseOptions, animationPhase: 'ripple' });
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const usaColor = getFillColor(geojson.features[0]); // USA — critical
     expect(usaColor[3]).toBeGreaterThan(0);
@@ -164,7 +184,7 @@ describe('createCountryFillLayer', () => {
 
   it('network phase: affected countries have fill', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const usaColor = getFillColor(geojson.features[0]);
     expect(usaColor[3]).toBeGreaterThan(0);
@@ -172,7 +192,7 @@ describe('createCountryFillLayer', () => {
 
   it('persistent phase: affected countries have fill', () => {
     const layer = createCountryFillLayer({ ...baseOptions, animationPhase: 'persistent' });
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const usaColor = getFillColor(geojson.features[0]);
     expect(usaColor[3]).toBeGreaterThan(0);
@@ -182,43 +202,43 @@ describe('createCountryFillLayer', () => {
 
   it('critical severity uses critical color', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[0]); // USA — critical negative
     expect(color.slice(0, 3)).toEqual([...SEVERITY_COLORS.critical]);
-    expect(color[3]).toBe(180);
+    expect(color[3]).toBe(200);
   });
 
   it('high severity uses high color', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[1]); // CHN — high negative
     expect(color.slice(0, 3)).toEqual([...SEVERITY_COLORS.high]);
-    expect(color[3]).toBe(140);
+    expect(color[3]).toBe(165);
   });
 
   it('medium severity uses medium color', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[2]); // JPN — medium mixed
     expect(color.slice(0, 3)).toEqual([...SEVERITY_COLORS.medium]);
-    expect(color[3]).toBe(100);
+    expect(color[3]).toBe(125);
   });
 
-  it('low severity uses low color with alpha 60', () => {
+  it('low severity uses low color with alpha 80', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
-    // AUS — low positive, so color should be positive green, alpha 60
+    // AUS — low positive, so color should be positive green, alpha 80
     const color = getFillColor(geojson.features[3]);
-    expect(color[3]).toBe(60);
+    expect(color[3]).toBe(80);
   });
 
   it('positive direction uses positive (green) color', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[3]); // AUS — low positive
     expect(color.slice(0, 3)).toEqual([...SEVERITY_COLORS.positive]);
@@ -226,7 +246,7 @@ describe('createCountryFillLayer', () => {
 
   it('negative direction uses severity color', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[0]); // USA — critical negative
     expect(color.slice(0, 3)).toEqual([...SEVERITY_COLORS.critical]);
@@ -234,7 +254,7 @@ describe('createCountryFillLayer', () => {
 
   it('mixed direction uses severity color (not positive)', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[2]); // JPN — medium mixed
     expect(color.slice(0, 3)).toEqual([...SEVERITY_COLORS.medium]);
@@ -244,7 +264,7 @@ describe('createCountryFillLayer', () => {
 
   it('unaffected country returns transparent', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[4]); // BRA — no impact
     expect(color).toEqual([0, 0, 0, 0]);
@@ -252,7 +272,7 @@ describe('createCountryFillLayer', () => {
 
   it('feature with null alpha3 returns transparent', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     const color = getFillColor(geojson.features[5]); // null alpha3
     expect(color).toEqual([0, 0, 0, 0]);
@@ -262,7 +282,7 @@ describe('createCountryFillLayer', () => {
 
   it('empty countryImpacts: all countries transparent', () => {
     const layer = createCountryFillLayer({ ...baseOptions, countryImpacts: [] });
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
     for (const f of geojson.features) {
       expect(getFillColor(f)).toEqual([0, 0, 0, 0]);
@@ -272,24 +292,25 @@ describe('createCountryFillLayer', () => {
   it('empty geojson: layer still created', () => {
     const emptyGeo = makeGeoJson([]);
     const layer = createCountryFillLayer({ ...baseOptions, geojson: emptyGeo });
-    expect(layer.props.id).toBe('country-fill');
-    expect((layer.props.data as FeatureCollection).features).toHaveLength(0);
+    expect(mockProps(layer).id).toBe('country-fill');
+    expect(mockProps(layer).data.features).toHaveLength(0);
   });
 
   it('has updateTriggers for getFillColor', () => {
     const layer = createCountryFillLayer(baseOptions);
-    expect(layer.props.updateTriggers).toBeDefined();
-    expect(layer.props.updateTriggers.getFillColor).toBeDefined();
+    const p = mockProps(layer);
+    expect(p.updateTriggers).toBeDefined();
+    expect(p.updateTriggers.getFillColor).toBeDefined();
   });
 
   it('higher severity has higher alpha', () => {
     const layer = createCountryFillLayer(baseOptions);
-    const getFillColor = layer.props.getFillColor as (f: Feature) => number[];
+    const getFillColor = mockProps(layer).getFillColor;
 
-    const critAlpha = getFillColor(geojson.features[0])[3]; // critical → 180
-    const highAlpha = getFillColor(geojson.features[1])[3]; // high → 140
-    const medAlpha = getFillColor(geojson.features[2])[3];  // medium → 100
-    const lowAlpha = getFillColor(geojson.features[3])[3];  // low → 60
+    const critAlpha = getFillColor(geojson.features[0])[3]; // critical → 200
+    const highAlpha = getFillColor(geojson.features[1])[3]; // high → 165
+    const medAlpha = getFillColor(geojson.features[2])[3];  // medium → 125
+    const lowAlpha = getFillColor(geojson.features[3])[3];  // low → 80
 
     expect(critAlpha).toBeGreaterThan(highAlpha);
     expect(highAlpha).toBeGreaterThan(medAlpha);
@@ -298,6 +319,6 @@ describe('createCountryFillLayer', () => {
 
   it('border color is semi-transparent white', () => {
     const layer = createCountryFillLayer(baseOptions);
-    expect(layer.props.getLineColor).toEqual([255, 255, 255, 40]);
+    expect(mockProps(layer).getLineColor).toEqual([255, 255, 255, 60]);
   });
 });

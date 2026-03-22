@@ -18,6 +18,7 @@ export function LocaleSwitcher() {
       onClick={switchLocale}
       className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-foreground)] transition-colors px-2 py-1 rounded border border-[var(--color-border)]"
       data-testid="locale-switcher"
+      aria-label="Switch language"
     >
       {locale === "en" ? "中文" : "EN"}
     </button>

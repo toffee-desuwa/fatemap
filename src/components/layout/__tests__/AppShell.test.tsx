@@ -163,9 +163,9 @@ describe('AppShell', () => {
 
   // --- EventFeed wiring ---
 
-  it('passes simulate to EventFeed.onSelectScenario', () => {
+  it('passes handler to EventFeed.onSelectScenario', () => {
     render(<AppShell />);
-    expect(capturedEventFeedProps.onSelectScenario).toBe(mockSimulate);
+    expect(typeof capturedEventFeedProps.onSelectScenario).toBe('function');
   });
 
   it('passes activeScenarioId to EventFeed', () => {

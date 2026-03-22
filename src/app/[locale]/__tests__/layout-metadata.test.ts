@@ -27,19 +27,21 @@ describe("generateMetadata", () => {
     const meta = await generateMetadata({
       params: Promise.resolve({ locale: "en" }),
     });
-    expect(meta.openGraph?.siteName).toBe("FateMap");
-    expect(meta.openGraph?.type).toBe("website");
-    expect(meta.openGraph?.title).toBeTruthy();
-    expect(meta.openGraph?.description).toBeTruthy();
+    const og = meta.openGraph as Record<string, unknown> | undefined;
+    expect(og?.siteName).toBe("FateMap");
+    expect(og?.type).toBe("website");
+    expect(og?.title).toBeTruthy();
+    expect(og?.description).toBeTruthy();
   });
 
   it("includes Twitter card config", async () => {
     const meta = await generateMetadata({
       params: Promise.resolve({ locale: "en" }),
     });
-    expect(meta.twitter?.card).toBe("summary_large_image");
-    expect(meta.twitter?.title).toBeTruthy();
-    expect(meta.twitter?.description).toBeTruthy();
+    const tw = meta.twitter as Record<string, unknown> | undefined;
+    expect(tw?.card).toBe("summary_large_image");
+    expect(tw?.title).toBeTruthy();
+    expect(tw?.description).toBeTruthy();
   });
 
   it("sets metadataBase URL", async () => {

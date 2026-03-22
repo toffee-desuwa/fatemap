@@ -39,6 +39,7 @@ export function EventCard({ scenario, onClick, active, locale }: EventCardProps)
         <span className="text-sm leading-none mt-0.5" aria-hidden="true">
           {icon}
         </span>
+        <span className="sr-only">{scenario.category}</span>
         <div className="min-w-0 flex-1">
           <div className="font-medium text-[var(--color-foreground)] truncate">
             {name}

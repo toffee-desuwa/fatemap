@@ -34,10 +34,10 @@ export const ISO_NUMERIC_TO_ALPHA3: Record<string, string> = {
 
 /** Alpha opacity per severity level (0-255) */
 const SEVERITY_ALPHA: Record<string, number> = {
-  critical: 180,
-  high: 140,
-  medium: 100,
-  low: 60,
+  critical: 200,
+  high: 165,
+  medium: 125,
+  low: 80,
 };
 
 /**
@@ -64,6 +64,10 @@ export interface CountryFillOptions {
   animationPhase: AnimationPhase;
 }
 
+// --- Cache for expensive map rebuild (avoid rebuilding 60x/sec) ---
+let _cachedCountryImpacts: CountryImpact[] | null = null;
+let _cachedImpactMap: Map<string, CountryImpact> | null = null;
+
 /**
  * Create a GeoJsonLayer rendering country polygons with severity-based fill colors.
  * - idle: all transparent
@@ -75,7 +79,12 @@ export function createCountryFillLayer({
   countryImpacts,
   animationPhase,
 }: CountryFillOptions): GeoJsonLayer {
-  const impactMap = new Map(countryImpacts.map((ci) => [ci.countryId, ci]));
+  // Cache impactMap — only rebuild when countryImpacts reference changes
+  if (_cachedCountryImpacts !== countryImpacts) {
+    _cachedCountryImpacts = countryImpacts;
+    _cachedImpactMap = new Map(countryImpacts.map((ci) => [ci.countryId, ci]));
+  }
+  const impactMap = _cachedImpactMap!;
   const isActive = animationPhase !== 'idle';
 
   return new GeoJsonLayer({
@@ -83,7 +92,7 @@ export function createCountryFillLayer({
     data: geojson,
     filled: true,
     stroked: true,
-    getLineColor: [255, 255, 255, 40],
+    getLineColor: [255, 255, 255, 60],
     lineWidthMinPixels: 0.5,
     getFillColor: (f: Feature<Geometry>) => {
       if (!isActive) return [0, 0, 0, 0];

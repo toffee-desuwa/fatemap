@@ -293,6 +293,98 @@ describe('ApiKeySettings', () => {
     expect(body.model).toContain('claude');
   });
 
+  // --- HTTP error code branches ---
+
+  it('shows forbidden error for 403 response', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      status: 403,
+    });
+    render(<ApiKeySettings />);
+    fireEvent.change(screen.getByTestId('apikey-input'), {
+      target: { value: 'sk-test' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('test-button'));
+    });
+    await waitFor(() => {
+      const msg = screen.getByTestId('status-message');
+      expect(msg).toHaveTextContent('Access denied');
+    });
+  });
+
+  it('shows rate limit error for 429 response', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      status: 429,
+    });
+    render(<ApiKeySettings />);
+    fireEvent.change(screen.getByTestId('apikey-input'), {
+      target: { value: 'sk-test' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('test-button'));
+    });
+    await waitFor(() => {
+      const msg = screen.getByTestId('status-message');
+      expect(msg).toHaveTextContent('Rate limited');
+    });
+  });
+
+  it('shows not found error for 404 response', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      status: 404,
+    });
+    render(<ApiKeySettings />);
+    fireEvent.change(screen.getByTestId('apikey-input'), {
+      target: { value: 'sk-test' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('test-button'));
+    });
+    await waitFor(() => {
+      const msg = screen.getByTestId('status-message');
+      expect(msg).toHaveTextContent('Endpoint not found');
+    });
+  });
+
+  it('shows server error for 500+ response', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      status: 502,
+    });
+    render(<ApiKeySettings />);
+    fireEvent.change(screen.getByTestId('apikey-input'), {
+      target: { value: 'sk-test' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('test-button'));
+    });
+    await waitFor(() => {
+      const msg = screen.getByTestId('status-message');
+      expect(msg).toHaveTextContent('Provider server error');
+    });
+  });
+
+  it('shows generic HTTP error for other status codes', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      status: 418,
+    });
+    render(<ApiKeySettings />);
+    fireEvent.change(screen.getByTestId('apikey-input'), {
+      target: { value: 'sk-test' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('test-button'));
+    });
+    await waitFor(() => {
+      const msg = screen.getByTestId('status-message');
+      expect(msg).toHaveTextContent('Request failed (HTTP 418)');
+    });
+  });
+
   // --- Status resets ---
 
   it('resets status when provider changes', () => {

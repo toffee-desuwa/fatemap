@@ -11,8 +11,8 @@ import { SEVERITY_COLORS } from './colors';
 /** Number of concentric rings */
 export const RING_COUNT = 4;
 
-/** Maximum ring radius in meters (~5000km) */
-const MAX_RADIUS_M = 5_000_000;
+/** Maximum ring radius in meters (~6000km) */
+const MAX_RADIUS_M = 6_000_000;
 
 /** Ripple phase duration in seconds */
 const RIPPLE_DURATION = 2;
@@ -21,7 +21,7 @@ const RIPPLE_DURATION = 2;
 const RING_STAGGER_S = 0.3;
 
 /** Ring stroke width in pixels */
-const RING_LINE_WIDTH = 3;
+const RING_LINE_WIDTH = 4;
 
 /** Fade-out duration at end of ripple (seconds) */
 const FADE_OUT_DURATION = 0.3;
@@ -60,7 +60,7 @@ export function getRingOpacity(animationTime: number, ringIndex: number): number
   if (elapsed <= 0) return 0;
 
   // Base opacity: outer rings brighter, inner rings dimmer
-  const baseOpacity = 200 - ringIndex * 40; // 200, 160, 120, 80
+  const baseOpacity = 230 - ringIndex * 40; // 230, 190, 150, 110
 
   // Fade in quickly (first 100ms after this ring starts)
   const fadeIn = Math.min(elapsed / 0.1, 1);

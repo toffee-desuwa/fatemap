@@ -1,8 +1,26 @@
 {
   "name": "fatemap",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "AI Geopolitical Prediction Sandbox",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toffee-project/fatemap.git"
+  },
+  "homepage": "https://fatemap.vercel.app",
+  "keywords": [
+    "geopolitical",
+    "ai",
+    "simulation",
+    "map",
+    "next.js",
+    "deck.gl",
+    "maplibre",
+    "what-if",
+    "sandbox",
+    "visualization"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,7 +33,6 @@
     "@deck.gl/layers": "^9.2.11",
     "@deck.gl/mapbox": "^9.2.11",
     "@deck.gl/react": "^9.2.11",
-    "deck.gl": "^9.2.11",
     "maplibre-gl": "^5.20.2",
     "misans": "^4.1.0",
     "next": "^15.2.0",

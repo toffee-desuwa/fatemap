@@ -11,6 +11,33 @@ jest.mock('@deck.gl/layers', () => ({
   PathLayer: jest.fn().mockImplementation((props) => ({ props })),
 }));
 
+/**
+ * The PathLayer mock replaces real layers with { props: Record<string, any> }.
+ * This interface describes the shape of the mocked props we inspect in tests.
+ */
+interface MockNetworkSegment {
+  id: string;
+  path: [number, number][];
+  strength: number;
+  severity: string;
+  activated: boolean;
+}
+
+interface MockPathLayerProps {
+  id: string;
+  data: MockNetworkSegment[];
+  getColor: (d: MockNetworkSegment) => [number, number, number, number];
+  getWidth: (d: MockNetworkSegment) => number;
+  widthUnits: string;
+  pickable: boolean;
+  updateTriggers: Record<string, unknown[]>;
+}
+
+/** Extract typed mock props from layer created with mocked PathLayer constructor. */
+function mockProps(layer: unknown): MockPathLayerProps {
+  return (layer as { props: MockPathLayerProps }).props;
+}
+
 const mockCountries: Country[] = [
   { id: 'USA', name: 'United States', nameCn: '美国', center: [-98.58, 39.83], capital: [-77.04, 38.9], region: 'North America' },
   { id: 'CHN', name: 'China', nameCn: '中国', center: [104.2, 35.86], capital: [116.41, 39.9], region: 'East Asia' },
@@ -45,22 +72,22 @@ describe('createNetworkGlowLayers', () => {
 
   it('layers have correct IDs (outer, mid, core)', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    expect(layers[0].props.id).toBe('network-glow-outer');
-    expect(layers[1].props.id).toBe('network-glow-mid');
-    expect(layers[2].props.id).toBe('network-glow-core');
+    expect(mockProps(layers[0]).id).toBe('network-glow-outer');
+    expect(mockProps(layers[1]).id).toBe('network-glow-mid');
+    expect(mockProps(layers[2]).id).toBe('network-glow-core');
   });
 
   it('only core layer is pickable', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    expect(layers[0].props.pickable).toBe(false);
-    expect(layers[1].props.pickable).toBe(false);
-    expect(layers[2].props.pickable).toBe(true);
+    expect(mockProps(layers[0]).pickable).toBe(false);
+    expect(mockProps(layers[1]).pickable).toBe(false);
+    expect(mockProps(layers[2]).pickable).toBe(true);
   });
 
   it('all layers use pixel width units', () => {
     const layers = createNetworkGlowLayers(baseOptions);
     for (const layer of layers) {
-      expect(layer.props.widthUnits).toBe('pixels');
+      expect(mockProps(layer).widthUnits).toBe('pixels');
     }
   });
 
@@ -70,9 +97,9 @@ describe('createNetworkGlowLayers', () => {
       animationPhase: 'idle',
     });
     // All segments get idle config — check core opacity
-    const data = layers[2].props.data;
-    for (const segment of data) {
-      const color = layers[2].props.getColor(segment);
+    const p = mockProps(layers[2]);
+    for (const segment of p.data) {
+      const color = p.getColor(segment);
       expect(color[3]).toBe(Math.round(NETWORK_GLOW_CONFIGS.idle.core.opacity * 255));
     }
   });
@@ -82,26 +109,26 @@ describe('createNetworkGlowLayers', () => {
       ...baseOptions,
       animationPhase: 'ripple',
     });
-    const data = layers[2].props.data;
-    for (const segment of data) {
-      const color = layers[2].props.getColor(segment);
+    const p = mockProps(layers[2]);
+    for (const segment of p.data) {
+      const color = p.getColor(segment);
       expect(color[3]).toBe(Math.round(NETWORK_GLOW_CONFIGS.idle.core.opacity * 255));
     }
   });
 
   it('network phase uses activated config for activated relationships', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    const data = layers[2].props.data;
-    const activated = data.find((d: { id: string }) => d.id === 'USA-CHN-trade');
-    const color = layers[2].props.getColor(activated);
+    const p = mockProps(layers[2]);
+    const activated = p.data.find((d) => d.id === 'USA-CHN-trade')!;
+    const color = p.getColor(activated);
     expect(color[3]).toBe(Math.round(NETWORK_GLOW_CONFIGS.activated.core.opacity * 255));
   });
 
   it('network phase uses dimmed config for non-activated relationships', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    const data = layers[2].props.data;
-    const dimmed = data.find((d: { id: string }) => d.id === 'USA-JPN-trade');
-    const color = layers[2].props.getColor(dimmed);
+    const p = mockProps(layers[2]);
+    const dimmed = p.data.find((d) => d.id === 'USA-JPN-trade')!;
+    const color = p.getColor(dimmed);
     expect(color[3]).toBe(Math.round(NETWORK_GLOW_CONFIGS.dimmed.core.opacity * 255));
   });
 
@@ -110,9 +137,9 @@ describe('createNetworkGlowLayers', () => {
       ...baseOptions,
       animationPhase: 'persistent',
     });
-    const data = layers[2].props.data;
-    const activated = data.find((d: { id: string }) => d.id === 'USA-CHN-trade');
-    const color = layers[2].props.getColor(activated);
+    const p = mockProps(layers[2]);
+    const activated = p.data.find((d) => d.id === 'USA-CHN-trade')!;
+    const color = p.getColor(activated);
     expect(color[3]).toBe(Math.round(NETWORK_GLOW_CONFIGS.activated.core.opacity * 255));
   });
 });
@@ -120,10 +147,10 @@ describe('createNetworkGlowLayers', () => {
 describe('color mapping', () => {
   it('activated relationship uses severity color (critical = red)', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    const data = layers[2].props.data;
+    const p = mockProps(layers[2]);
     // USA-CHN: USA=critical, CHN=high → picks critical
-    const segment = data.find((d: { id: string }) => d.id === 'USA-CHN-trade');
-    const color = layers[2].props.getColor(segment);
+    const segment = p.data.find((d) => d.id === 'USA-CHN-trade')!;
+    const color = p.getColor(segment);
     expect(color[0]).toBe(SEVERITY_COLORS.critical[0]); // 255
     expect(color[1]).toBe(SEVERITY_COLORS.critical[1]); // 51
     expect(color[2]).toBe(SEVERITY_COLORS.critical[2]); // 68
@@ -131,10 +158,10 @@ describe('color mapping', () => {
 
   it('picks higher severity between from/to countries', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    const data = layers[2].props.data;
+    const p = mockProps(layers[2]);
     // CHN-JPN: CHN=high, JPN=medium → picks high
-    const segment = data.find((d: { id: string }) => d.id === 'CHN-JPN-trade');
-    const color = layers[2].props.getColor(segment);
+    const segment = p.data.find((d) => d.id === 'CHN-JPN-trade')!;
+    const color = p.getColor(segment);
     expect(color[0]).toBe(SEVERITY_COLORS.high[0]); // 255
     expect(color[1]).toBe(SEVERITY_COLORS.high[1]); // 136
     expect(color[2]).toBe(SEVERITY_COLORS.high[2]); // 68
@@ -142,9 +169,9 @@ describe('color mapping', () => {
 
   it('non-activated relationships use unaffected color', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    const data = layers[2].props.data;
-    const dimmed = data.find((d: { id: string }) => d.id === 'USA-JPN-trade');
-    const color = layers[2].props.getColor(dimmed);
+    const p = mockProps(layers[2]);
+    const dimmed = p.data.find((d) => d.id === 'USA-JPN-trade')!;
+    const color = p.getColor(dimmed);
     expect(color[0]).toBe(SEVERITY_COLORS.unaffected[0]); // 51
     expect(color[1]).toBe(SEVERITY_COLORS.unaffected[1]); // 68
     expect(color[2]).toBe(SEVERITY_COLORS.unaffected[2]); // 85
@@ -155,9 +182,9 @@ describe('color mapping', () => {
       ...baseOptions,
       animationPhase: 'idle',
     });
-    const data = layers[2].props.data;
-    for (const segment of data) {
-      const color = layers[2].props.getColor(segment);
+    const p = mockProps(layers[2]);
+    for (const segment of p.data) {
+      const color = p.getColor(segment);
       expect(color[0]).toBe(SEVERITY_COLORS.unaffected[0]);
     }
   });
@@ -166,21 +193,20 @@ describe('color mapping', () => {
 describe('width calculation', () => {
   it('width scales with relationship strength', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    const data = layers[2].props.data;
-    const strength5 = data.find((d: { id: string }) => d.id === 'USA-CHN-trade'); // strength 5
-    const strength3 = data.find((d: { id: string }) => d.id === 'CHN-JPN-trade'); // strength 3
-    const w5 = layers[2].props.getWidth(strength5);
-    const w3 = layers[2].props.getWidth(strength3);
+    const p = mockProps(layers[2]);
+    const strength5 = p.data.find((d) => d.id === 'USA-CHN-trade')!; // strength 5
+    const strength3 = p.data.find((d) => d.id === 'CHN-JPN-trade')!; // strength 3
+    const w5 = p.getWidth(strength5);
+    const w3 = p.getWidth(strength3);
     expect(w5).toBeGreaterThan(w3);
   });
 
   it('outer layer is wider than mid, mid wider than core', () => {
     const layers = createNetworkGlowLayers(baseOptions);
-    const data = layers[2].props.data;
-    const segment = data[0];
-    const outerW = layers[0].props.getWidth(segment);
-    const midW = layers[1].props.getWidth(segment);
-    const coreW = layers[2].props.getWidth(segment);
+    const segment = mockProps(layers[2]).data[0];
+    const outerW = mockProps(layers[0]).getWidth(segment);
+    const midW = mockProps(layers[1]).getWidth(segment);
+    const coreW = mockProps(layers[2]).getWidth(segment);
     expect(outerW).toBeGreaterThan(midW);
     expect(midW).toBeGreaterThan(coreW);
   });
@@ -200,54 +226,54 @@ describe('getNetworkPulseMultiplier', () => {
   });
 
   it('reaches peak of 1.0', () => {
-    const peakTime = Math.PI / 6;
+    const peakTime = Math.PI / 8; // sin(t*4) = 1 when t = π/8
     expect(getNetworkPulseMultiplier(peakTime)).toBeCloseTo(1.0, 5);
   });
 
   it('reaches trough of 0.7', () => {
-    const troughTime = Math.PI / 2;
+    const troughTime = (3 * Math.PI) / 8; // sin(t*4) = -1 when t = 3π/8
     expect(getNetworkPulseMultiplier(troughTime)).toBeCloseTo(0.7, 5);
   });
 });
 
 describe('pulse effect', () => {
   it('applies pulse to critical severity activated lines', () => {
-    const troughTime = Math.PI / 2; // multiplier = 0.7
+    const troughTime = (3 * Math.PI) / 8; // multiplier = 0.7 (sin(t*4) = -1 at t=3π/8)
     const layers = createNetworkGlowLayers({
       ...baseOptions,
       pulseTime: troughTime,
     });
-    const data = layers[2].props.data;
+    const p = mockProps(layers[2]);
     // USA-CHN is critical+activated → pulse applies
-    const critical = data.find((d: { id: string }) => d.id === 'USA-CHN-trade');
-    const color = layers[2].props.getColor(critical);
+    const critical = p.data.find((d) => d.id === 'USA-CHN-trade')!;
+    const color = p.getColor(critical);
     const expectedOpacity = Math.round(NETWORK_GLOW_CONFIGS.activated.core.opacity * 0.7 * 255);
     expect(color[3]).toBe(expectedOpacity);
   });
 
   it('does not apply pulse to non-critical activated lines', () => {
-    const troughTime = Math.PI / 2;
+    const troughTime = (3 * Math.PI) / 8;
     const layers = createNetworkGlowLayers({
       ...baseOptions,
       pulseTime: troughTime,
     });
-    const data = layers[2].props.data;
+    const p = mockProps(layers[2]);
     // CHN-JPN is high severity (not critical) → no pulse
-    const high = data.find((d: { id: string }) => d.id === 'CHN-JPN-trade');
-    const color = layers[2].props.getColor(high);
+    const high = p.data.find((d) => d.id === 'CHN-JPN-trade')!;
+    const color = p.getColor(high);
     const expectedOpacity = Math.round(NETWORK_GLOW_CONFIGS.activated.core.opacity * 255);
     expect(color[3]).toBe(expectedOpacity);
   });
 
   it('does not apply pulse to dimmed lines', () => {
-    const troughTime = Math.PI / 2;
+    const troughTime = (3 * Math.PI) / 8;
     const layers = createNetworkGlowLayers({
       ...baseOptions,
       pulseTime: troughTime,
     });
-    const data = layers[2].props.data;
-    const dimmed = data.find((d: { id: string }) => d.id === 'USA-JPN-trade');
-    const color = layers[2].props.getColor(dimmed);
+    const p = mockProps(layers[2]);
+    const dimmed = p.data.find((d) => d.id === 'USA-JPN-trade')!;
+    const color = p.getColor(dimmed);
     const expectedOpacity = Math.round(NETWORK_GLOW_CONFIGS.dimmed.core.opacity * 255);
     expect(color[3]).toBe(expectedOpacity);
   });
@@ -282,7 +308,7 @@ describe('edge cases', () => {
       relationships: [],
     });
     expect(layers).toHaveLength(3);
-    expect(layers[0].props.data).toHaveLength(0);
+    expect(mockProps(layers[0]).data).toHaveLength(0);
   });
 
   it('handles empty activatedIds', () => {
@@ -291,10 +317,10 @@ describe('edge cases', () => {
       activatedIds: [],
       animationPhase: 'network',
     });
-    const data = layers[2].props.data;
+    const p = mockProps(layers[2]);
     // All should be dimmed
-    for (const segment of data) {
-      const color = layers[2].props.getColor(segment);
+    for (const segment of p.data) {
+      const color = p.getColor(segment);
       expect(color[3]).toBe(Math.round(NETWORK_GLOW_CONFIGS.dimmed.core.opacity * 255));
     }
   });
@@ -308,7 +334,7 @@ describe('edge cases', () => {
       ],
     });
     // Only 3 valid segments (XXX-YYY skipped)
-    expect(layers[0].props.data).toHaveLength(3);
+    expect(mockProps(layers[0]).data).toHaveLength(3);
   });
 
   it('includes updateTriggers for animationPhase and pulseTime', () => {
@@ -316,7 +342,7 @@ describe('edge cases', () => {
       ...baseOptions,
       pulseTime: 5,
     });
-    expect(layers[0].props.updateTriggers.getColor).toContain('network');
-    expect(layers[0].props.updateTriggers.getColor).toContain(5);
+    expect(mockProps(layers[0]).updateTriggers.getColor).toContain('network');
+    expect(mockProps(layers[0]).updateTriggers.getColor).toContain(5);
   });
 });

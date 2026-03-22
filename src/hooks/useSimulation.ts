@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type {
   SimulationResult,
   PresetScenario,
@@ -20,6 +20,7 @@ export function useSimulation() {
   const [activeScenarioId, setActiveScenarioId] = useState<string | undefined>();
 
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const abortRef = useRef<AbortController | null>(null);
 
   const clearTimers = useCallback(() => {
     for (const t of timersRef.current) clearTimeout(t);
@@ -39,15 +40,15 @@ export function useSimulation() {
   }, [clearTimers]);
 
   const simulate = useCallback(
-    async (input: string) => {
+    async (input: string, directPreset?: PresetScenario) => {
       if (!input.trim()) return;
 
       // Reset state for new simulation
       setError(null);
       setSuggestions([]);
 
-      // 1. Try keyword match
-      const preset = matchScenario(input);
+      // 1. Use direct preset if provided (from chips/feed click), else keyword match
+      const preset = directPreset ?? matchScenario(input);
       if (preset) {
         setResult(preset.result);
         setActiveScenarioId(preset.id);
@@ -68,23 +69,37 @@ export function useSimulation() {
       const provider = providerId ? getProvider(providerId) : undefined;
 
       if (provider && apiKey) {
+        // Abort any in-flight LLM request before starting a new one
+        abortRef.current?.abort();
+        abortRef.current = new AbortController();
+
         setLoading(true);
-        const { result: llmResult, error: llmError } = await analyzeWithLlm(
-          input,
-          provider,
-          apiKey,
-        );
-        setLoading(false);
+        try {
+          const { result: llmResult, error: llmError } = await analyzeWithLlm(
+            input,
+            provider,
+            apiKey,
+            abortRef.current.signal,
+          );
+          setLoading(false);
 
-        if (llmResult) {
-          setResult(llmResult);
-          setActiveScenarioId(undefined);
-          startAnimationCycle();
-          return;
+          if (llmResult) {
+            setResult(llmResult);
+            setActiveScenarioId(undefined);
+            startAnimationCycle();
+            return;
+          }
+
+          // LLM failed — set error and fall through to suggestions
+          setError(llmError ?? 'Unknown LLM error');
+        } catch (err) {
+          // Silently ignore AbortError — means a newer request superseded this one
+          if (err instanceof DOMException && err.name === 'AbortError') {
+            return;
+          }
+          setLoading(false);
+          setError(err instanceof Error ? err.message : 'Unknown error');
         }
-
-        // LLM failed — set error and fall through to suggestions
-        setError(llmError ?? 'Unknown LLM error');
       }
 
       // 3. No match, no key (or LLM failed) — show suggestions
@@ -95,6 +110,8 @@ export function useSimulation() {
   );
 
   const clear = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
     clearTimers();
     setResult(null);
     setError(null);
@@ -102,6 +119,13 @@ export function useSimulation() {
     setAnimationPhase('idle');
     setActiveScenarioId(undefined);
   }, [clearTimers]);
+
+  // Abort any in-flight LLM request on unmount
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
 
   return { simulate, result, loading, error, suggestions, clear, animationPhase, activeScenarioId };
 }

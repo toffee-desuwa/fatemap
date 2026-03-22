@@ -6,10 +6,10 @@
  * on a deck.gl + MapLibre GL base map with requestAnimationFrame animation.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { Map as MapGL } from 'react-map-gl/maplibre';
-import type { PickingInfo } from '@deck.gl/core';
+import type { Layer, PickingInfo } from '@deck.gl/core';
 import type { FeatureCollection, Feature, Geometry } from 'geojson';
 import type { Topology, GeometryCollection } from 'topojson-specification';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -18,6 +18,7 @@ import type { AnimationPhase, SimulationResult } from '@/lib/types';
 import { COUNTRIES } from '@/lib/countries';
 import { CITIES } from '@/lib/cities';
 import { RELATIONSHIPS } from '@/lib/relationships';
+import { countryMap, cityMap } from '@/lib/country-utils';
 import { convertTopoJson, createCountryFillLayer } from '@/lib/country-regions';
 import { createNetworkGlowLayers } from '@/lib/network-glow';
 import { createCityMarkerLayers } from '@/lib/city-markers';
@@ -99,52 +100,56 @@ export function FateMap({
     };
   }, [animationPhase]);
 
-  // Build layers
-  const layers = [];
+  // Build layers (memoized to avoid rebuilding on every render)
+  const layers = useMemo(() => {
+    const layerArray: Layer[] = [];
 
-  // 1. Country fill (bottom)
-  if (geojson) {
-    layers.push(
-      createCountryFillLayer({
-        geojson,
+    // 1. Country fill (bottom)
+    if (geojson) {
+      layerArray.push(
+        createCountryFillLayer({
+          geojson,
+          countryImpacts: simulationResult?.countryImpacts ?? [],
+          animationPhase,
+        }),
+      );
+    }
+
+    // 2. Network glow lines
+    layerArray.push(
+      ...createNetworkGlowLayers({
+        relationships: RELATIONSHIPS,
+        countries: COUNTRIES,
         countryImpacts: simulationResult?.countryImpacts ?? [],
+        activatedIds: simulationResult?.activatedRelationships ?? [],
         animationPhase,
+        pulseTime: animationTime,
       }),
     );
-  }
 
-  // 2. Network glow lines
-  layers.push(
-    ...createNetworkGlowLayers({
-      relationships: RELATIONSHIPS,
-      countries: COUNTRIES,
-      countryImpacts: simulationResult?.countryImpacts ?? [],
-      activatedIds: simulationResult?.activatedRelationships ?? [],
-      animationPhase,
-      pulseTime: animationTime,
-    }),
-  );
-
-  // 3. City impact markers
-  layers.push(
-    ...createCityMarkerLayers({
-      cities: CITIES,
-      cityImpacts: simulationResult?.cityImpacts ?? [],
-      animationTime,
-      animationPhase,
-    }),
-  );
-
-  // 4. Shockwave ripple rings (top)
-  if (simulationResult) {
-    layers.push(
-      ...createShockwaveLayers({
-        epicenter: simulationResult.epicenter.coordinates,
+    // 3. City impact markers
+    layerArray.push(
+      ...createCityMarkerLayers({
+        cities: CITIES,
+        cityImpacts: simulationResult?.cityImpacts ?? [],
         animationTime,
         animationPhase,
       }),
     );
-  }
+
+    // 4. Shockwave ripple rings (top)
+    if (simulationResult) {
+      layerArray.push(
+        ...createShockwaveLayers({
+          epicenter: simulationResult.epicenter.coordinates,
+          animationTime,
+          animationPhase,
+        }),
+      );
+    }
+
+    return layerArray;
+  }, [geojson, simulationResult, animationPhase, animationTime]);
 
   const handleClick = useCallback(
     (info: PickingInfo) => {
@@ -179,7 +184,7 @@ export function FateMap({
 
     if (info.layer.id === 'city-marker-dot') {
       const data = info.object as { cityId?: string; severity?: string };
-      const city = CITIES.find((c) => c.id === data.cityId);
+      const city = data.cityId ? cityMap.get(data.cityId) : undefined;
       if (city) {
         return { text: `${city.name} (${city.nameCn})`, style: TOOLTIP_STYLE };
       }
@@ -191,7 +196,7 @@ export function FateMap({
         | string
         | undefined;
       if (alpha3) {
-        const country = COUNTRIES.find((c) => c.id === alpha3);
+        const country = countryMap.get(alpha3);
         if (country) {
           return { text: `${country.name} (${country.nameCn})`, style: TOOLTIP_STYLE };
         }

@@ -22,7 +22,7 @@
   },
   "report": {
     "epicenter": "震中：{flag} {name}",
-    "countryImpacts": "国家影响 ({count})",
+    "countryImpacts": "国家和地区影响 ({count})",
     "cityImpacts": "城市影响 ({count})"
   },
   "landing": {
@@ -37,7 +37,7 @@
     "feature3Title": "实时可视化",
     "feature3Desc": "冲击波涟漪、网络发光线、国家填充和城市标记动画展示全球影响。",
     "feature4Title": "142 条关系",
-    "feature4Desc": "48 个国家之间的贸易、军事、能源、供应链、政治和地理关系。",
+    "feature4Desc": "48 个国家和地区之间的贸易、军事、能源、供应链、政治和地理关系。",
     "feature5Title": "双语界面",
     "feature5Desc": "所有场景、影响和界面元素均支持中文和英文。",
     "feature6Title": "开源项目",
@@ -76,6 +76,15 @@
     "saved": "设置已保存",
     "testSuccess": "连接成功！",
     "testFailed": "连接失败：{error}",
+    "errorAuth": "认证失败 — 请检查 API 密钥",
+    "errorForbidden": "访问被拒绝 — 密钥可能缺少权限",
+    "errorRateLimit": "请求频率超限 — 请稍后重试",
+    "errorNotFound": "端点未找到 — 请检查提供商设置",
+    "errorServer": "提供商服务器错误 — 请稍后重试",
+    "errorHttp": "请求失败 (HTTP {status})",
+    "errorNetwork": "网络错误 — 请检查网络连接",
+    "model": "模型",
+    "endpoint": "端点",
     "clear": "清除",
     "cleared": "设置已清除"
   }

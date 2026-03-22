@@ -2,7 +2,7 @@ import { parseSimulationResponse } from '../llm-schema';
 
 // Minimal valid SimulationResult JSON
 const validResult = {
-  event: 'What if China invades Taiwan?',
+  event: 'What if Mainland China initiates a military blockade of Taiwan?',
   timestamp: '2026-03-21T00:00:00Z',
   epicenter: { countryId: 'CHN', coordinates: [121.5, 25.0] },
   countryImpacts: [

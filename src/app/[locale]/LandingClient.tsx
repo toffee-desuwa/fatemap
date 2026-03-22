@@ -31,7 +31,7 @@ export function LandingClient() {
         {/* Hero content */}
         <div className="relative z-20 flex h-full flex-col items-center justify-center px-4 text-center">
           <h1
-            className="mb-4 text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
+            className="mb-4 text-3xl font-bold tracking-tight xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl"
             data-testid="hero-title"
           >
             <span className="text-[#ff3344]">{tc('appName')}</span>
@@ -41,7 +41,7 @@ export function LandingClient() {
           </p>
           <Link
             href="/dashboard"
-            className="rounded-lg bg-[#ff3344] px-6 py-2.5 text-base font-semibold text-white transition-colors hover:bg-[#e62e3c] md:px-8 md:py-3 md:text-lg"
+            className="rounded-lg bg-[#ff3344] px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-[#e62e3c] md:px-8 md:py-3 md:text-lg"
             data-testid="hero-cta"
           >
             {t('cta')}

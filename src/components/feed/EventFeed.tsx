@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useDeferredValue, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { SCENARIOS } from '@/lib/scenarios';
+import type { PresetScenario } from '@/lib/types';
 import { EventCard } from './EventCard';
 
 const CATEGORIES = [
@@ -18,7 +19,7 @@ const CATEGORIES = [
 ] as const;
 
 interface EventFeedProps {
-  onSelectScenario: (eventText: string) => void;
+  onSelectScenario: (scenario: PresetScenario) => void;
   activeScenarioId?: string;
 }
 
@@ -27,14 +28,15 @@ export function EventFeed({ onSelectScenario, activeScenarioId }: EventFeedProps
   const locale = useLocale();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [search, setSearch] = useState('');
+  const deferredSearch = useDeferredValue(search);
 
   const filtered = useMemo(() => {
     let list = SCENARIOS;
     if (selectedCategory !== 'all') {
       list = list.filter((s) => s.category === selectedCategory);
     }
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
+    if (deferredSearch.trim()) {
+      const q = deferredSearch.trim().toLowerCase();
       list = list.filter(
         (s) =>
           s.name.toLowerCase().includes(q) ||
@@ -45,7 +47,7 @@ export function EventFeed({ onSelectScenario, activeScenarioId }: EventFeedProps
       );
     }
     return list;
-  }, [selectedCategory, search]);
+  }, [selectedCategory, deferredSearch]);
 
   return (
     <div data-testid="event-feed" className="flex flex-col h-full">
@@ -58,13 +60,17 @@ export function EventFeed({ onSelectScenario, activeScenarioId }: EventFeedProps
 
       {/* Search */}
       <div className="px-3 pb-2">
+        <label htmlFor="event-search" className="sr-only">
+          {t('search')}
+        </label>
         <input
+          id="event-search"
           type="text"
           data-testid="feed-search"
           placeholder={t('search')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-md border border-[var(--color-border)] bg-transparent px-2 py-1 text-xs text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:outline-none"
+          className="w-full rounded-md border border-[var(--color-border)] bg-transparent px-2 py-1 text-xs text-[var(--color-foreground)] placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)]"
         />
       </div>
 
@@ -75,6 +81,7 @@ export function EventFeed({ onSelectScenario, activeScenarioId }: EventFeedProps
             key={cat}
             data-testid={`filter-${cat}`}
             onClick={() => setSelectedCategory(cat)}
+            aria-pressed={cat === selectedCategory}
             className={`rounded-full px-2 py-0.5 text-[10px] transition-colors ${
               selectedCategory === cat
                 ? 'bg-[var(--color-primary)] text-white'
@@ -97,7 +104,7 @@ export function EventFeed({ onSelectScenario, activeScenarioId }: EventFeedProps
             <EventCard
               key={scenario.id}
               scenario={scenario}
-              onClick={() => onSelectScenario(scenario.eventText)}
+              onClick={() => onSelectScenario(scenario)}
               active={activeScenarioId === scenario.id}
               locale={locale}
             />

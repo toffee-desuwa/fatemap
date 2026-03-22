@@ -1,7 +1,8 @@
 import type { Country } from './types';
 
 /**
- * 48 geopolitically significant countries for FateMap simulation.
+ * 48 geopolitically significant entities for FateMap simulation.
+ * Includes sovereign states and significant economic regions.
  * Each entry: ISO 3166-1 alpha-3 id, English/Chinese names,
  * geographic center [lng, lat], capital [lng, lat], and region.
  */
@@ -34,11 +35,11 @@ export const COUNTRIES: Country[] = [
   { id: 'GRC', name: 'Greece', nameCn: '希腊', center: [21.82, 39.07], capital: [23.73, 37.98], region: 'Europe' },
 
   // ── East Asia ──────────────────────────────────────────────
-  { id: 'CHN', name: 'China', nameCn: '中国', center: [104.20, 35.86], capital: [116.41, 39.90], region: 'East Asia' },
+  { id: 'CHN', name: 'Mainland China', nameCn: '中国大陆', center: [104.20, 35.86], capital: [116.41, 39.90], region: 'East Asia' },
   { id: 'JPN', name: 'Japan', nameCn: '日本', center: [138.25, 36.20], capital: [139.69, 35.69], region: 'East Asia' },
   { id: 'KOR', name: 'South Korea', nameCn: '韩国', center: [127.77, 35.91], capital: [126.98, 37.57], region: 'East Asia' },
   { id: 'PRK', name: 'North Korea', nameCn: '朝鲜', center: [127.51, 40.34], capital: [125.75, 39.02], region: 'East Asia' },
-  { id: 'TWN', name: 'Taiwan', nameCn: '台湾', center: [120.96, 23.70], capital: [121.57, 25.03], region: 'East Asia' },
+  { id: 'TWN', name: 'Taiwan, China', nameCn: '中国台湾', center: [120.96, 23.70], capital: [121.57, 25.03], region: 'East Asia' },
 
   // ── Southeast Asia ─────────────────────────────────────────
   { id: 'SGP', name: 'Singapore', nameCn: '新加坡', center: [103.82, 1.35], capital: [103.82, 1.35], region: 'Southeast Asia' },

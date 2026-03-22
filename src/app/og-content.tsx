@@ -81,16 +81,35 @@ export function OgImageContent() {
         </span>
       </div>
 
-      {/* Tagline */}
+      {/* Tagline — bilingual */}
       <div
         style={{
-          fontSize: 28,
-          color: "#a0a0a0",
           display: "flex",
-          letterSpacing: 0.5,
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 8,
         }}
       >
-        Input any event. Watch the world react.
+        <div
+          style={{
+            fontSize: 28,
+            color: "#a0a0a0",
+            display: "flex",
+            letterSpacing: 0.5,
+          }}
+        >
+          Input any event. Watch the world react.
+        </div>
+        <div
+          style={{
+            fontSize: 22,
+            color: "#707070",
+            display: "flex",
+            letterSpacing: 0.5,
+          }}
+        >
+          输入任意事件，观察世界反应。
+        </div>
       </div>
 
       {/* Bottom accent line */}
@@ -105,19 +124,44 @@ export function OgImageContent() {
       >
         <div
           style={{
-            fontSize: 16,
-            color: "#666",
             display: "flex",
-            gap: 24,
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 6,
           }}
         >
-          <span>AI Geopolitical Sandbox</span>
-          <span>·</span>
-          <span>48 Countries</span>
-          <span>·</span>
-          <span>28 Scenarios</span>
-          <span>·</span>
-          <span>Open Source</span>
+          <div
+            style={{
+              fontSize: 16,
+              color: "#666",
+              display: "flex",
+              gap: 24,
+            }}
+          >
+            <span>AI Geopolitical Sandbox</span>
+            <span>·</span>
+            <span>48 Countries & Regions</span>
+            <span>·</span>
+            <span>28 Scenarios</span>
+            <span>·</span>
+            <span>Open Source</span>
+          </div>
+          <div
+            style={{
+              fontSize: 14,
+              color: "#555",
+              display: "flex",
+              gap: 24,
+            }}
+          >
+            <span>AI 地缘政治沙盘</span>
+            <span>·</span>
+            <span>48 个国家和地区</span>
+            <span>·</span>
+            <span>28 个场景</span>
+            <span>·</span>
+            <span>开源项目</span>
+          </div>
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ export function ImpactReport({
   const t = useTranslations('report');
   const locale = useLocale();
   const isZh = locale === 'zh';
-  const rowRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const rowRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
 
   const sortedCountryImpacts = useMemo(
     () =>
@@ -71,6 +71,7 @@ export function ImpactReport({
             <button
               onClick={onClear}
               data-testid="clear-button"
+              aria-label="Close report"
               className="shrink-0 ml-2 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-foreground)] transition-colors"
             >
               ✕
@@ -110,21 +111,17 @@ export function ImpactReport({
             if (!country) return null;
             const isSelected = impact.countryId === selectedCountryId;
             return (
-              <div
+              <button
+                type="button"
                 key={impact.countryId}
                 ref={(el) => {
                   if (el) rowRefs.current.set(impact.countryId, el);
                 }}
                 data-testid={`country-row-${impact.countryId}`}
                 onClick={() => onCountryClick?.(impact.countryId)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ')
-                    onCountryClick?.(impact.countryId);
-                }}
+                aria-label={`Select ${isZh ? country.nameCn : country.name}`}
                 style={{ animationDelay: `${i * 100}ms` }}
-                className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs cursor-pointer transition-colors animate-[fadeSlideIn_300ms_ease-out_both] ${
+                className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs cursor-pointer transition-colors animate-[fadeSlideIn_300ms_ease-out_both] border-0 bg-transparent text-left w-full ${
                   isSelected
                     ? 'bg-[var(--color-surface-hover)] ring-1 ring-[var(--color-primary)]'
                     : 'hover:bg-[var(--color-surface-hover)]'
@@ -155,7 +152,7 @@ export function ImpactReport({
                     suffix="%"
                   />
                 </span>
-              </div>
+              </button>
             );
           })}
         </div>

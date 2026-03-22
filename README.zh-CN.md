@@ -1,5 +1,10 @@
 # 🌍 FateMap（命运地图）
 
+[![MIT License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
+[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-black.svg)](https://vercel.com)
+
 **输入任何事件，看世界如何反应。**
 
 AI 驱动的地缘政治推演沙盘。
@@ -10,7 +15,7 @@ AI 驱动的地缘政治推演沙盘。
 
 ## FateMap 是什么？
 
-FateMap 是一个交互式沙盘，你输入一个「如果……会怎样？」的场景 —— 比如 *「如果中国武统台湾？」* —— 然后看 AI 预测的全球影响以冲击波动画实时扩散到世界地图上。国家亮起颜色，城市闪烁脉冲，贸易路线发光，冲击波从震中向外扩展。
+FateMap 是一个交互式沙盘，你输入一个「如果……会怎样？」的场景 —— 比如 *「如果霍尔木兹海峡被封锁？」* —— 然后看 AI 预测的全球影响以冲击波动画实时扩散到世界地图上。国家亮起颜色，城市闪烁脉冲，贸易路线发光，冲击波从震中向外扩展。
 
 **28 个预设场景开箱即用，无需 API 密钥。** 自带 LLM 密钥（DeepSeek、Gemini、OpenAI、Anthropic）可解锁自定义场景。
 

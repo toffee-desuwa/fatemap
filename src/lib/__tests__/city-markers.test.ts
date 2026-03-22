@@ -11,6 +11,33 @@ jest.mock('@deck.gl/layers', () => ({
   ScatterplotLayer: jest.fn().mockImplementation((props) => ({ props })),
 }));
 
+/**
+ * The ScatterplotLayer mock replaces real layers with { props: Record<string, any> }.
+ * This interface describes the shape of the mocked props we inspect in tests.
+ */
+interface MockCityMarkerData {
+  cityId: string;
+  coordinates: [number, number];
+  severity: string;
+  direction: string;
+  index: number;
+}
+
+interface MockScatterplotProps {
+  id: string;
+  data: MockCityMarkerData[];
+  getFillColor: (d: MockCityMarkerData) => number[];
+  getRadius: number | ((d: MockCityMarkerData) => number);
+  radiusUnits: string;
+  pickable: boolean;
+  updateTriggers: Record<string, unknown>;
+}
+
+/** Extract typed mock props from layer created with mocked ScatterplotLayer constructor. */
+function mockProps(layer: unknown): MockScatterplotProps {
+  return (layer as { props: MockScatterplotProps }).props;
+}
+
 const mockCities: City[] = [
   { id: 'new-york', name: 'New York', nameCn: '纽约', coordinates: [-74.01, 40.71], countryId: 'USA', type: 'financial', importance: 5 },
   { id: 'shanghai', name: 'Shanghai', nameCn: '上海', coordinates: [121.47, 31.23], countryId: 'CHN', type: 'port', importance: 5 },
@@ -38,43 +65,43 @@ describe('createCityMarkerLayers', () => {
 
   it('layers have correct IDs (halo + dot)', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    expect(layers[0].props.id).toBe('city-marker-halo');
-    expect(layers[1].props.id).toBe('city-marker-dot');
+    expect(mockProps(layers[0]).id).toBe('city-marker-halo');
+    expect(mockProps(layers[1]).id).toBe('city-marker-dot');
   });
 
   it('only dot layer is pickable', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    expect(layers[0].props.pickable).toBe(false);
-    expect(layers[1].props.pickable).toBe(true);
+    expect(mockProps(layers[0]).pickable).toBe(false);
+    expect(mockProps(layers[1]).pickable).toBe(true);
   });
 
   it('both layers use pixel radius units', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    expect(layers[0].props.radiusUnits).toBe('pixels');
-    expect(layers[1].props.radiusUnits).toBe('pixels');
+    expect(mockProps(layers[0]).radiusUnits).toBe('pixels');
+    expect(mockProps(layers[1]).radiusUnits).toBe('pixels');
   });
 
   it('idle phase produces empty data', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, animationPhase: 'idle' });
-    expect(layers[0].props.data).toHaveLength(0);
-    expect(layers[1].props.data).toHaveLength(0);
+    expect(mockProps(layers[0]).data).toHaveLength(0);
+    expect(mockProps(layers[1]).data).toHaveLength(0);
   });
 
   it('ripple phase produces empty data', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, animationPhase: 'ripple' });
-    expect(layers[0].props.data).toHaveLength(0);
-    expect(layers[1].props.data).toHaveLength(0);
+    expect(mockProps(layers[0]).data).toHaveLength(0);
+    expect(mockProps(layers[1]).data).toHaveLength(0);
   });
 
   it('network phase produces data for all impacted cities', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    expect(layers[0].props.data).toHaveLength(3);
-    expect(layers[1].props.data).toHaveLength(3);
+    expect(mockProps(layers[0]).data).toHaveLength(3);
+    expect(mockProps(layers[1]).data).toHaveLength(3);
   });
 
   it('persistent phase produces data for all impacted cities', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, animationPhase: 'persistent' });
-    expect(layers[0].props.data).toHaveLength(3);
+    expect(mockProps(layers[0]).data).toHaveLength(3);
   });
 
   it('skips cities not found in cities array', () => {
@@ -83,25 +110,26 @@ describe('createCityMarkerLayers', () => {
       { cityId: 'new-york', severity: 'high', direction: 'negative', impactType: 'market_crash' },
     ];
     const layers = createCityMarkerLayers({ ...baseOptions, cityImpacts: impacts });
-    expect(layers[0].props.data).toHaveLength(1);
-    expect(layers[0].props.data[0].cityId).toBe('new-york');
+    const p = mockProps(layers[0]);
+    expect(p.data).toHaveLength(1);
+    expect(p.data[0].cityId).toBe('new-york');
   });
 
   it('empty cityImpacts returns empty data', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, cityImpacts: [] });
-    expect(layers[0].props.data).toHaveLength(0);
+    expect(mockProps(layers[0]).data).toHaveLength(0);
   });
 
   it('empty cities returns empty data', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, cities: [] });
-    expect(layers[0].props.data).toHaveLength(0);
+    expect(mockProps(layers[0]).data).toHaveLength(0);
   });
 
   it('halo color uses severity colors for negative direction', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, animationTime: 5.0 });
-    const getFillColor = layers[0].props.getFillColor;
-    const criticalData = layers[0].props.data[0]; // critical + negative
-    const color = getFillColor(criticalData);
+    const p = mockProps(layers[0]);
+    const criticalData = p.data[0]; // critical + negative
+    const color = p.getFillColor(criticalData);
     expect(color[0]).toBe(SEVERITY_COLORS.critical[0]);
     expect(color[1]).toBe(SEVERITY_COLORS.critical[1]);
     expect(color[2]).toBe(SEVERITY_COLORS.critical[2]);
@@ -109,9 +137,9 @@ describe('createCityMarkerLayers', () => {
 
   it('halo color uses positive color for positive direction', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, animationTime: 5.0 });
-    const getFillColor = layers[0].props.getFillColor;
-    const positiveData = layers[0].props.data[2]; // tokyo — positive
-    const color = getFillColor(positiveData);
+    const p = mockProps(layers[0]);
+    const positiveData = p.data[2]; // tokyo — positive
+    const color = p.getFillColor(positiveData);
     expect(color[0]).toBe(SEVERITY_COLORS.positive[0]);
     expect(color[1]).toBe(SEVERITY_COLORS.positive[1]);
     expect(color[2]).toBe(SEVERITY_COLORS.positive[2]);
@@ -119,9 +147,9 @@ describe('createCityMarkerLayers', () => {
 
   it('dot layer uses white color', () => {
     const layers = createCityMarkerLayers({ ...baseOptions, animationTime: 5.0 });
-    const getFillColor = layers[1].props.getFillColor;
-    const data = layers[1].props.data[0];
-    const color = getFillColor(data);
+    const p = mockProps(layers[1]);
+    const data = p.data[0];
+    const color = p.getFillColor(data);
     expect(color[0]).toBe(255);
     expect(color[1]).toBe(255);
     expect(color[2]).toBe(255);
@@ -129,19 +157,19 @@ describe('createCityMarkerLayers', () => {
 
   it('dot layer has fixed radius', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    expect(layers[1].props.getRadius).toBe(3);
+    expect(mockProps(layers[1]).getRadius).toBe(4);
   });
 
   it('data includes correct coordinates from city lookup', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    const data = layers[0].props.data;
+    const data = mockProps(layers[0]).data;
     expect(data[0].coordinates).toEqual([-74.01, 40.71]); // new-york
     expect(data[1].coordinates).toEqual([121.47, 31.23]); // shanghai
   });
 
   it('data includes stagger index for fade-in', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    const data = layers[0].props.data;
+    const data = mockProps(layers[0]).data;
     expect(data[0].index).toBe(0);
     expect(data[1].index).toBe(1);
     expect(data[2].index).toBe(2);
@@ -149,17 +177,17 @@ describe('createCityMarkerLayers', () => {
 
   it('has updateTriggers for animation', () => {
     const layers = createCityMarkerLayers(baseOptions);
-    expect(layers[0].props.updateTriggers.getFillColor).toBeDefined();
-    expect(layers[0].props.updateTriggers.getRadius).toBeDefined();
-    expect(layers[1].props.updateTriggers.getFillColor).toBeDefined();
+    expect(mockProps(layers[0]).updateTriggers.getFillColor).toBeDefined();
+    expect(mockProps(layers[0]).updateTriggers.getRadius).toBeDefined();
+    expect(mockProps(layers[1]).updateTriggers.getFillColor).toBeDefined();
   });
 });
 
 describe('getCityPulseRadius', () => {
   it('returns value around base radius', () => {
     const r = getCityPulseRadius(0);
-    expect(r).toBeGreaterThanOrEqual(5); // 7 - 2
-    expect(r).toBeLessThanOrEqual(9);    // 7 + 2
+    expect(r).toBeGreaterThanOrEqual(7);  // 10 - 3
+    expect(r).toBeLessThanOrEqual(13);    // 10 + 3
   });
 
   it('varies with animation time', () => {
@@ -171,13 +199,13 @@ describe('getCityPulseRadius', () => {
   it('peaks at expected sine point', () => {
     // sin(t * 2) = 1 when t = π/4
     const rPeak = getCityPulseRadius(Math.PI / 4);
-    expect(rPeak).toBeCloseTo(9, 1); // 7 + 2
+    expect(rPeak).toBeCloseTo(13, 1); // 10 + 3
   });
 
   it('troughs at expected sine point', () => {
     // sin(t * 2) = -1 when t = 3π/4
     const rTrough = getCityPulseRadius((3 * Math.PI) / 4);
-    expect(rTrough).toBeCloseTo(5, 1); // 7 - 2
+    expect(rTrough).toBeCloseTo(7, 1); // 10 - 3
   });
 });
 

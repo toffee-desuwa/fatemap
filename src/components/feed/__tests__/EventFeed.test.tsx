@@ -84,11 +84,11 @@ describe('EventFeed', () => {
     expect(screen.getByText('No matching scenarios')).toBeInTheDocument();
   });
 
-  it('calls onSelectScenario with eventText when card is clicked', () => {
+  it('calls onSelectScenario with scenario object when card is clicked', () => {
     render(<EventFeed onSelectScenario={onSelectScenario} />);
     const firstScenario = SCENARIOS[0];
     fireEvent.click(screen.getByTestId(`event-card-${firstScenario.id}`));
-    expect(onSelectScenario).toHaveBeenCalledWith(firstScenario.eventText);
+    expect(onSelectScenario).toHaveBeenCalledWith(firstScenario);
   });
 
   it('marks active card based on activeScenarioId', () => {

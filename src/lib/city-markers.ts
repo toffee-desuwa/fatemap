@@ -12,13 +12,13 @@ import { SEVERITY_COLORS } from './colors';
 const STAGGER_DELAY_MS = 100;
 
 /** Base halo radius in pixels */
-const HALO_RADIUS = 7;
+const HALO_RADIUS = 10;
 /** Pulse amplitude in pixels (radius oscillates ± this value) */
-const PULSE_AMPLITUDE = 2;
+const PULSE_AMPLITUDE = 3;
 /** Inner dot radius in pixels */
-const DOT_RADIUS = 3;
+const DOT_RADIUS = 4;
 /** Halo base opacity (0-255) */
-const HALO_OPACITY = 51; // ~0.2
+const HALO_OPACITY = 70; // ~0.27
 
 interface CityMarkerData {
   coordinates: [number, number];
@@ -58,6 +58,12 @@ export interface CityMarkerOptions {
   animationPhase: AnimationPhase;
 }
 
+// --- Cache for expensive map rebuild (avoid rebuilding 60x/sec) ---
+let _cachedCities: City[] | null = null;
+let _cachedCityMap: Map<string, City> | null = null;
+let _cachedCityImpacts: CityImpact[] | null = null;
+let _cachedCityData: CityMarkerData[] | null = null;
+
 /**
  * Create 2 ScatterplotLayers for city impact markers:
  * 1. Outer halo: pulsing radius, severity-colored, low opacity
@@ -73,23 +79,33 @@ export function createCityMarkerLayers({
 }: CityMarkerOptions): ScatterplotLayer<CityMarkerData>[] {
   const isVisible = animationPhase === 'network' || animationPhase === 'persistent';
 
-  const cityMap = new Map(cities.map((c) => [c.id, c]));
+  // Cache cityMap — cities array is a static module-level constant
+  if (_cachedCities !== cities) {
+    _cachedCities = cities;
+    _cachedCityMap = new Map(cities.map((c) => [c.id, c]));
+    _cachedCityData = null; // invalidate data cache when cities change
+  }
+  const cityMap = _cachedCityMap!;
 
-  const data: CityMarkerData[] = isVisible
-    ? cityImpacts
-        .map((impact, index) => {
-          const city = cityMap.get(impact.cityId);
-          if (!city) return null;
-          return {
-            coordinates: city.coordinates,
-            cityId: impact.cityId,
-            severity: impact.severity,
-            direction: impact.direction,
-            index,
-          };
-        })
-        .filter((d): d is CityMarkerData => d !== null)
-    : [];
+  // Cache data array — only rebuild when cityImpacts reference changes
+  if (_cachedCityImpacts !== cityImpacts || _cachedCityData === null) {
+    _cachedCityImpacts = cityImpacts;
+    _cachedCityData = cityImpacts
+      .map((impact, index) => {
+        const city = cityMap.get(impact.cityId);
+        if (!city) return null;
+        return {
+          coordinates: city.coordinates,
+          cityId: impact.cityId,
+          severity: impact.severity,
+          direction: impact.direction,
+          index,
+        };
+      })
+      .filter((d): d is CityMarkerData => d !== null);
+  }
+
+  const data: CityMarkerData[] = isVisible ? _cachedCityData : [];
 
   const haloLayer = new ScatterplotLayer<CityMarkerData>({
     id: 'city-marker-halo',

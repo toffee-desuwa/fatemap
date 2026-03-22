@@ -7,6 +7,7 @@ import { ScenarioInput } from '@/components/simulation/ScenarioInput';
 import { ImpactReport } from '@/components/simulation/ImpactReport';
 import { EventFeed } from '@/components/feed/EventFeed';
 import { Header } from './Header';
+import type { PresetScenario } from '@/lib/types';
 
 export function AppShell() {
   const { simulate, result, loading, error, suggestions, clear, animationPhase, activeScenarioId } =
@@ -34,21 +35,25 @@ export function AppShell() {
     setSelectedCountryId(undefined);
   }, [clear]);
 
+  const handleSelectScenario = useCallback((scenario: PresetScenario) => {
+    simulate(scenario.eventText, scenario);
+  }, [simulate]);
+
   return (
     <div data-testid="app-shell" className="flex h-screen flex-col">
       <Header currentPage="dashboard" />
 
-      <div className="relative flex-1 grid grid-cols-1 md:grid-cols-[1fr_360px] lg:grid-cols-[240px_1fr_360px]">
+      <div className="relative flex-1 min-h-0 grid grid-cols-1 md:grid-cols-[1fr_360px] lg:grid-cols-[240px_1fr_360px]">
         {/* Left sidebar — Event Feed (desktop only) */}
-        <div className="hidden lg:block border-r border-[var(--color-border)] bg-[var(--color-background)] overflow-hidden">
+        <aside className="hidden lg:block border-r border-[var(--color-border)] bg-[var(--color-background)] overflow-hidden">
           <EventFeed
-            onSelectScenario={simulate}
+            onSelectScenario={handleSelectScenario}
             activeScenarioId={activeScenarioId}
           />
-        </div>
+        </aside>
 
         {/* Map area */}
-        <div className="relative overflow-hidden">
+        <main className="relative overflow-hidden">
           <FateMap
             simulationResult={result}
             animationPhase={animationPhase}
@@ -77,7 +82,10 @@ export function AppShell() {
           {error && (
             <div
               data-testid="mobile-error"
-              className="absolute top-[180px] inset-x-2 z-10 rounded-md bg-[var(--color-background)]/90 px-4 py-2 text-xs text-[var(--color-primary)] md:hidden"
+              aria-live="assertive"
+              role="alert"
+              className="absolute inset-x-2 z-10 rounded-md bg-[var(--color-background)]/90 px-4 py-2 text-xs text-[var(--color-primary)] md:hidden"
+              style={{ top: 'calc(env(safe-area-inset-top, 0px) + 4.5rem)' }}
             >
               {error}
             </div>
@@ -86,7 +94,7 @@ export function AppShell() {
           {/* Mobile: bottom sheet for results */}
           {result && (
             <div data-testid="mobile-report" className="absolute bottom-0 inset-x-0 z-10 max-h-[50vh] overflow-y-auto rounded-t-xl border-t border-[var(--color-border)] bg-[var(--color-background)] shadow-[0_-4px_20px_rgba(0,0,0,0.3)] md:hidden">
-              <div className="flex justify-center pt-2 pb-1">
+              <div className="flex justify-center py-1 min-h-[44px] items-center cursor-grab">
                 <div className="h-1 w-8 rounded-full bg-[var(--color-text-secondary)]/40" />
               </div>
               <ImpactReport
@@ -97,10 +105,10 @@ export function AppShell() {
               />
             </div>
           )}
-        </div>
+        </main>
 
         {/* Right panel (tablet+ only) */}
-        <div className="hidden md:flex flex-col border-l border-[var(--color-border)] bg-[var(--color-background)] overflow-hidden">
+        <aside className="hidden md:flex flex-col border-l border-[var(--color-border)] bg-[var(--color-background)] overflow-hidden">
           <ScenarioInput
             onSimulate={simulate}
             loading={loading}
@@ -110,6 +118,8 @@ export function AppShell() {
           {error && (
             <div
               data-testid="error-message"
+              aria-live="assertive"
+              role="alert"
               className="px-4 pb-2 text-xs text-[var(--color-primary)]"
             >
               {error}
@@ -126,7 +136,7 @@ export function AppShell() {
               />
             </div>
           )}
-        </div>
+        </aside>
       </div>
     </div>
   );

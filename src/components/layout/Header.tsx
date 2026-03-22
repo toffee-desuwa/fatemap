@@ -25,19 +25,20 @@ export function Header({ currentPage }: HeaderProps) {
       className="flex h-12 items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-2 md:px-4"
     >
       {/* Left: Brand + Nav */}
-      <div className="flex items-center gap-3 md:gap-6">
+      <div className="flex items-center gap-2 md:gap-6 min-w-0">
         <Link
           href="/dashboard"
-          className="text-sm font-bold tracking-wider text-[var(--color-primary)]"
+          className="text-sm font-bold tracking-wider text-[var(--color-primary)] truncate"
           data-testid="brand"
         >
           {t('appName')}
         </Link>
-        <nav className="flex items-center gap-2 md:gap-4" data-testid="nav">
+        <nav className="flex items-center gap-2 md:gap-4 flex-shrink-0" data-testid="nav">
           <Link
             href="/dashboard"
             data-testid="nav-dashboard"
-            className={`text-xs transition-colors ${
+            aria-current={currentPage === 'dashboard' ? 'page' : undefined}
+            className={`text-xs whitespace-nowrap transition-colors ${
               currentPage === 'dashboard'
                 ? 'text-[var(--color-foreground)]'
                 : 'text-[var(--color-text-secondary)] hover:text-[var(--color-foreground)]'
@@ -48,7 +49,8 @@ export function Header({ currentPage }: HeaderProps) {
           <Link
             href="/settings"
             data-testid="nav-settings"
-            className={`text-xs transition-colors ${
+            aria-current={currentPage === 'settings' ? 'page' : undefined}
+            className={`text-xs whitespace-nowrap transition-colors ${
               currentPage === 'settings'
                 ? 'text-[var(--color-foreground)]'
                 : 'text-[var(--color-text-secondary)] hover:text-[var(--color-foreground)]'

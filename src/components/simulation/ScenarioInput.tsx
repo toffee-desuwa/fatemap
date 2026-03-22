@@ -22,7 +22,7 @@ const EXAMPLES = EXAMPLE_IDS.map(
 );
 
 interface ScenarioInputProps {
-  onSimulate: (input: string) => void;
+  onSimulate: (input: string, directPreset?: PresetScenario) => void;
   loading: boolean;
   suggestions?: PresetScenario[];
 }
@@ -56,7 +56,7 @@ export function ScenarioInput({
   const handleScenarioSelect = useCallback(
     (scenario: PresetScenario) => {
       setInput(scenario.eventText);
-      onSimulate(scenario.eventText);
+      onSimulate(scenario.eventText, scenario);
     },
     [onSimulate],
   );
@@ -65,7 +65,11 @@ export function ScenarioInput({
     <div className="flex flex-col gap-3 p-4">
       {/* Input area */}
       <div className="relative">
+        <label htmlFor="scenario-input" className="sr-only">
+          {t('placeholder')}
+        </label>
         <textarea
+          id="scenario-input"
           value={input}
           onChange={(e) =>
             setInput(e.target.value.slice(0, MAX_LENGTH))
@@ -75,10 +79,11 @@ export function ScenarioInput({
           maxLength={MAX_LENGTH}
           rows={3}
           disabled={loading}
-          className="w-full resize-none rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 pr-16 text-sm text-[var(--color-foreground)] placeholder:text-[var(--color-text-secondary)] focus:border-[var(--color-primary)] focus:outline-none disabled:opacity-50"
+          aria-describedby="char-counter"
+          className="w-full resize-none rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-3 pr-16 text-sm text-[var(--color-foreground)] placeholder:text-[var(--color-text-secondary)] focus:border-[var(--color-primary)] disabled:opacity-50"
         />
         <div className="absolute right-2 bottom-2 flex items-center gap-2">
-          <span className="text-xs text-[var(--color-text-secondary)]">
+          <span id="char-counter" className="text-xs text-[var(--color-text-secondary)]">
             {input.length}/{MAX_LENGTH}
           </span>
           <button
@@ -93,7 +98,7 @@ export function ScenarioInput({
 
       {/* Loading state */}
       {loading && (
-        <div className="text-center text-sm text-[var(--color-primary)] animate-pulse">
+        <div aria-live="polite" className="text-center text-sm text-[var(--color-primary)] animate-pulse">
           {t('simulating')}
         </div>
       )}

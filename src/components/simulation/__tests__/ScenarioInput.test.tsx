@@ -176,7 +176,7 @@ describe('ScenarioInput', () => {
     fireEvent.click(taiwanBtn);
 
     const taiwanScenario = SCENARIOS.find((s) => s.id === 'taiwan-strait-crisis')!;
-    expect(onSimulate).toHaveBeenCalledWith(taiwanScenario.eventText);
+    expect(onSimulate).toHaveBeenCalledWith(taiwanScenario.eventText, taiwanScenario);
   });
 
   it('updates textarea value on example click', () => {
@@ -224,6 +224,6 @@ describe('ScenarioInput', () => {
     ];
     render(<ScenarioInput {...defaultProps} onSimulate={onSimulate} suggestions={suggestions} />);
     fireEvent.click(screen.getByText('Suggestion One'));
-    expect(onSimulate).toHaveBeenCalledWith('What if suggestion?');
+    expect(onSimulate).toHaveBeenCalledWith('What if suggestion?', suggestions[0]);
   });
 });

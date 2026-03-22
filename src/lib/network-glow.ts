@@ -27,9 +27,9 @@ export const NETWORK_GLOW_CONFIGS: Record<'idle' | 'activated' | 'dimmed', GlowC
     core: { width: 1, opacity: 0.2 },
   },
   activated: {
-    outer: { width: 8, opacity: 0.15 },
-    mid: { width: 5, opacity: 0.4 },
-    core: { width: 2, opacity: 0.95 },
+    outer: { width: 12, opacity: 0.25 },
+    mid: { width: 7, opacity: 0.55 },
+    core: { width: 3, opacity: 1.0 },
   },
   dimmed: {
     outer: { width: 3, opacity: 0.03 },
@@ -49,7 +49,7 @@ const STRENGTH_WIDTH: Record<number, number> = {
 
 /** Pulse multiplier for critical severity lines. Oscillates 0.7-1.0. */
 export function getNetworkPulseMultiplier(pulseTime: number): number {
-  return 0.85 + Math.sin(pulseTime * 3) * 0.15;
+  return 0.85 + Math.sin(pulseTime * 4) * 0.15;
 }
 
 /** Internal data structure for path rendering */
@@ -131,6 +131,16 @@ export interface NetworkGlowOptions {
   pulseTime?: number;
 }
 
+// --- Cache for expensive map/segment rebuilds (avoid rebuilding 60x/sec) ---
+let _cachedCountries: Country[] | null = null;
+let _cachedCountryMap: Map<string, Country> | null = null;
+let _cachedActivatedIds: string[] | null = null;
+let _cachedActivatedSet: Set<string> | null = null;
+let _cachedImpacts: CountryImpact[] | null = null;
+let _cachedImpactMap: Map<string, CountryImpact> | null = null;
+let _cachedRelationships: Relationship[] | null = null;
+let _cachedSegments: NetworkSegment[] | null = null;
+
 /**
  * Create 3 PathLayer instances forming a glow stack for relationship network.
  * Returns [outerGlow, midGlow, coreLine] — render outer first, core on top.
@@ -143,11 +153,39 @@ export function createNetworkGlowLayers({
   animationPhase,
   pulseTime,
 }: NetworkGlowOptions): PathLayer<NetworkSegment>[] {
-  const countryMap = new Map(countries.map((c) => [c.id, c]));
-  const activatedSet = new Set(activatedIds);
-  const impactMap = new Map(countryImpacts.map((ci) => [ci.countryId, ci]));
+  // Cache countryMap — countries array is a static module-level constant
+  if (_cachedCountries !== countries) {
+    _cachedCountries = countries;
+    _cachedCountryMap = new Map(countries.map((c) => [c.id, c]));
+  }
+  const countryMap = _cachedCountryMap!;
 
-  const segments = buildSegments(relationships, countryMap, activatedSet, impactMap);
+  // Cache activatedSet by reference equality of activatedIds
+  if (_cachedActivatedIds !== activatedIds) {
+    _cachedActivatedIds = activatedIds;
+    _cachedActivatedSet = new Set(activatedIds);
+  }
+  const activatedSet = _cachedActivatedSet!;
+
+  // Cache impactMap by reference equality of countryImpacts
+  if (_cachedImpacts !== countryImpacts) {
+    _cachedImpacts = countryImpacts;
+    _cachedImpactMap = new Map(countryImpacts.map((ci) => [ci.countryId, ci]));
+  }
+  const impactMap = _cachedImpactMap!;
+
+  // Cache segments — only rebuild when data inputs change
+  if (
+    _cachedRelationships !== relationships ||
+    _cachedCountries !== countries ||
+    _cachedActivatedIds !== activatedIds ||
+    _cachedImpacts !== countryImpacts ||
+    _cachedSegments === null
+  ) {
+    _cachedRelationships = relationships;
+    _cachedSegments = buildSegments(relationships, countryMap, activatedSet, impactMap);
+  }
+  const segments = _cachedSegments;
 
   const isNetworkPhase = animationPhase === 'network' || animationPhase === 'persistent';
   const pulse =

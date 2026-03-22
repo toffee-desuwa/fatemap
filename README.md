@@ -1,5 +1,10 @@
 # 🌍 FateMap
 
+[![MIT License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
+[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-black.svg)](https://vercel.com)
+
 **Input any event. Watch the world react.**
 
 AI-powered geopolitical simulation on a world map.
@@ -10,7 +15,7 @@ AI-powered geopolitical simulation on a world map.
 
 ## What is FateMap?
 
-FateMap is an interactive sandbox where you type a "what if" scenario — like *"What if China invades Taiwan?"* — and watch the predicted global impact ripple across a world map in real time. Countries light up, cities pulse, trade routes glow, and shockwaves expand from the epicenter.
+FateMap is an interactive sandbox where you type a "what if" scenario — like *"What if the Strait of Hormuz is blockaded?"* — and watch the predicted global impact ripple across a world map in real time. Countries light up, cities pulse, trade routes glow, and shockwaves expand from the epicenter.
 
 **28 preset scenarios work instantly — no API key required.** Bring your own LLM key (DeepSeek, Gemini, OpenAI, Anthropic) for custom scenarios.
 

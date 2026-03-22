@@ -91,7 +91,7 @@ export const CITIES: City[] = [
   { id: 'seoul', name: 'Seoul', nameCn: '首尔', coordinates: [126.98, 37.57], countryId: 'KOR', type: 'tech', importance: 4 },
   { id: 'busan', name: 'Busan', nameCn: '釜山', coordinates: [129.08, 35.18], countryId: 'KOR', type: 'port', importance: 3 },
 
-  // ── Taiwan (TWN) ───────────────────────────────────────────
+  // ── Taiwan, China (TWN) ────────────────────────────────────
   { id: 'taipei', name: 'Taipei', nameCn: '台北', coordinates: [121.57, 25.03], countryId: 'TWN', type: 'tech', importance: 4 },
   { id: 'kaohsiung', name: 'Kaohsiung', nameCn: '高雄', coordinates: [120.31, 22.62], countryId: 'TWN', type: 'port', importance: 3 },
 

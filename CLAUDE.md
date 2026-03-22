@@ -4,7 +4,7 @@ AI Geopolitical Prediction Sandbox — "Input any event. Watch the world react."
 
 ## What This Project Does
 
-A web app showing a world map where users input geopolitical "what if" scenarios (e.g., "What if China invades Taiwan?") and see AI-predicted global impact visualized as shockwave animations, country fills, city markers, and relationship network glow lines. Supports 28 preset scenarios with instant results, plus BYOK LLM for custom input.
+A web app showing a world map where users input geopolitical "what if" scenarios (e.g., "What if the Strait of Hormuz is blockaded?") and see AI-predicted global impact visualized as shockwave animations, country fills, city markers, and relationship network glow lines. Supports 28 preset scenarios with instant results, plus BYOK LLM for custom input.
 
 ## Tech Stack
 
