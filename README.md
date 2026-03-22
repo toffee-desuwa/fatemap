@@ -18,7 +18,9 @@ pinned: false
 
 AI-powered geopolitical simulation on a world map.
 
-**[Live Demo](https://fatemap.vercel.app)** | [中文版](./README.zh-CN.md)
+**[Live Demo](https://toffee-desuwa-fatemap.hf.space)** | [中文版](./README.zh-CN.md)
+
+![FateMap Demo](docs/demo.png)
 
 ---
 

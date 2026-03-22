@@ -9,7 +9,9 @@
 
 AI 驱动的地缘政治推演沙盘。
 
-**[在线体验](https://fatemap.vercel.app)** | [English](./README.md)
+**[在线体验](https://toffee-desuwa-fatemap.hf.space)** | [English](./README.md)
+
+![FateMap 演示](docs/demo.png)
 
 ---
 
