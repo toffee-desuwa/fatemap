@@ -9,7 +9,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install --frozen-lockfile || npm install
 
 COPY . .
 RUN npm run build
