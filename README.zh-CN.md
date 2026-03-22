@@ -9,7 +9,7 @@
 
 AI 驱动的地缘政治推演沙盘。
 
-[English](./README.md)
+**[在线体验](https://fatemap.vercel.app)** | [English](./README.md)
 
 ---
 

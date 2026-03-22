@@ -9,7 +9,7 @@
 
 AI-powered geopolitical simulation on a world map.
 
-[中文版](./README.zh-CN.md)
+**[Live Demo](https://fatemap.vercel.app)** | [中文版](./README.zh-CN.md)
 
 ---
 
