@@ -1,3 +1,12 @@
+---
+title: FateMap
+emoji: 🌍
+colorFrom: red
+colorTo: gray
+sdk: docker
+pinned: false
+---
+
 # 🌍 FateMap
 
 [![MIT License](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
