@@ -11,7 +11,7 @@ AI 驱动的地缘政治推演沙盘。
 
 **[在线体验](https://toffee-desuwa-fatemap.hf.space)** | [English](./README.md)
 
-![FateMap 演示](docs/demo.png)
+![FateMap 演示](https://raw.githubusercontent.com/toffee-desuwa/fatemap/main/docs/demo.png)
 
 ---
 
